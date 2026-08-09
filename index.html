@@ -1,0 +1,2043 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#d9b78b" />
+<title>小日倉｜生活用品管理 v1.4</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE2IiBmaWxsPSIjRjdERUM0Ii8+CjxwYXRoIGQ9Ik0xMiAzMSAzMiAxNGwyMCAxN3YyMWE0IDQgMCAwIDEtNCA0SDE2YTQgNCAwIDAgMS00LTRaIiBmaWxsPSIjRkZGOUYyIi8+CjxwYXRoIGQ9Ik05IDMyIDMyIDExbDIzIDIxLTUgNS0xOC0xNi0xOCAxNloiIGZpbGw9IiNDOThFNTgiLz4KPHJlY3QgeD0iMjYiIHk9IjM4IiB3aWR0aD0iMTIiIGhlaWdodD0iMTgiIHJ4PSIyIiBmaWxsPSIjOUNDREI3Ii8+CjxyZWN0IHg9IjE3IiB5PSIzNSIgd2lkdGg9IjgiIGhlaWdodD0iOCIgcng9IjIiIGZpbGw9IiNFOUM5QTgiLz4KPHJlY3QgeD0iMzkiIHk9IjM1IiB3aWR0aD0iOCIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0iI0Q4Q0NFRiIvPgo8L3N2Zz4=" />
+<style>
+:root{
+  --bg:#fffaf4; --card:#ffffff; --ink:#4a3c33; --muted:#8d7b70; --line:#eee0d3;
+  --accent:#c98e58; --accent-deep:#9c6237; --accent2:#f7dec4;
+  --peach:#fff1e7; --cream:#fff9ec; --mint:#eff8f2; --lilac:#f6f0ff; --blue:#eef5fc; --rose:#fff0f1;
+  --good:#4f9272; --warn:#c68939; --bad:#c95e62;
+  --shadow:0 10px 34px rgba(119,85,58,.11); --shadow-soft:0 5px 18px rgba(119,85,58,.08);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 8% 6%,rgba(250,218,183,.38) 0 72px,transparent 73px),
+    radial-gradient(circle at 93% 10%,rgba(224,211,247,.27) 0 86px,transparent 87px),
+    radial-gradient(circle at 88% 72%,rgba(207,238,223,.25) 0 102px,transparent 103px),
+    linear-gradient(180deg,#fffaf4 0%,#fffefe 45%,#fff9f4 100%);
+  background-attachment:fixed;
+}
+body{min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:active{transform:scale(.98)}
+.app{max-width:1180px;margin:0 auto;padding:18px 16px 94px}
+
+.topbar{
+  display:flex;gap:14px;align-items:center;justify-content:space-between;
+  margin-bottom:18px;padding:10px 12px 10px 10px;
+  border:1px solid rgba(238,224,211,.92);border-radius:22px;
+  background:rgba(255,255,255,.80);backdrop-filter:blur(10px);
+  box-shadow:var(--shadow-soft);
+}
+.brand{display:flex;align-items:center;gap:11px}
+.logo{
+  width:48px;height:48px;border-radius:18px;
+  background:linear-gradient(145deg,#fff0d9,#e8c49d);
+  display:grid;place-items:center;font-size:26px;
+  box-shadow:0 7px 18px rgba(172,119,70,.18);
+}
+.brand h1{font-size:23px;margin:0;letter-spacing:.5px}
+.brand h1:after{content:" ☘";font-size:13px;color:#78a88f;vertical-align:middle}
+.brand small{display:block;color:var(--muted);margin-top:2px}
+.iconbtn{
+  border:1px solid #ead8c7;background:linear-gradient(180deg,#fff,#fff8f1);
+  border-radius:15px;padding:10px 13px;color:var(--ink);
+  box-shadow:0 4px 12px rgba(119,85,58,.07);
+}
+
+.section{
+  background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:26px;
+  padding:19px;box-shadow:var(--shadow);margin:14px 0;position:relative;overflow:hidden
+}
+.section:before{
+  content:"";position:absolute;width:82px;height:82px;border-radius:999px;
+  right:-38px;top:-42px;background:rgba(250,224,196,.36);pointer-events:none
+}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px;position:relative}
+.section h3{margin:0;font-size:18px}.sub{color:var(--muted);font-size:13px;margin-top:3px}
+.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--line);background:#fff;border-radius:15px;padding:10px 13px;color:var(--ink)
+}
+.btn.primary{
+  background:linear-gradient(180deg,#d4a16e,#bd7e49);border-color:#bd7e49;color:white;
+  box-shadow:0 5px 13px rgba(163,103,51,.18)
+}
+.btn.soft{
+  background:linear-gradient(180deg,#fff8f0,#fff0e4);border-color:#e8c9ad;color:#915d37;font-weight:750
+}
+.head-add{
+  background:linear-gradient(145deg,#fffdfa,#fff0e5);
+  border-color:#ead0b7;color:#885a37;font-weight:750;
+  box-shadow:0 4px 11px rgba(151,101,58,.08)
+}
+.head-purchase{
+  background:linear-gradient(145deg,#fcfbff,#f1edff);
+  border-color:#d9cff0;color:#6c5b8f;font-weight:750;
+  box-shadow:0 4px 11px rgba(111,91,151,.08)
+}
+.head-count{
+  background:linear-gradient(145deg,#f9fffc,#eaf7f2);
+  border-color:#c8e1d6;color:#4f7767;font-weight:750;
+  box-shadow:0 4px 11px rgba(79,119,103,.08)
+}
+.head-add:hover,.head-purchase:hover,.head-count:hover{
+  transform:translateY(-1px);
+  box-shadow:0 5px 13px rgba(100,80,65,.11)
+}
+.grow{flex:1}
+
+.search{
+  width:100%;border:1px solid var(--line);border-radius:15px;padding:11px 12px;
+  margin:8px 0 12px;background:#fffdf9;outline:none
+}
+.search:focus{border-color:#d9b188;box-shadow:0 0 0 3px rgba(208,157,109,.16)}
+
+.chips{display:flex;gap:8px;overflow:auto;padding-bottom:4px}
+.chip{
+  white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;
+  padding:8px 12px;color:var(--muted);box-shadow:0 2px 7px rgba(120,85,58,.04)
+}
+.chip.active{background:#fff0e3;color:#8f5a31;border-color:#e6c3a3;font-weight:700}
+
+.inventory{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:12px}
+.item{
+  border:1px solid var(--line);border-radius:20px;padding:14px;
+  background:linear-gradient(180deg,#fff,#fffdf9);box-shadow:0 4px 13px rgba(119,85,58,.05)
+}
+.item.type-food{background:linear-gradient(180deg,#fffdfa,#fff1e5);border-color:#efd8c2}
+.item.type-drink{background:linear-gradient(180deg,#fcfeff,#eef5fc);border-color:#d6e3f0}
+.item.type-daily{background:linear-gradient(180deg,#fffefe,#fff0f1);border-color:#ecd6d9}
+.item.type-clean{background:linear-gradient(180deg,#fbfffd,#eff8f2);border-color:#d2e7da}
+.item.type-beauty{background:linear-gradient(180deg,#fefcff,#f6f0ff);border-color:#ded4ee}
+.item.type-health{background:linear-gradient(180deg,#fffefd,#fff5ea);border-color:#ebdac4}
+.item.type-tech{background:linear-gradient(180deg,#fdfefe,#f0f3f5);border-color:#dfe3e6}
+.item.type-other{background:linear-gradient(180deg,#fff,#f7f5f2);border-color:#e3ddd8}
+
+.item-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.item h4{margin:0 0 4px;font-size:16px}
+.meta{font-size:12px;color:var(--muted);line-height:1.65}
+.qty{
+  font-size:22px;font-weight:800;white-space:nowrap;color:#705242;text-align:right;
+  max-width:46%;line-height:1.25
+}
+.qty small{font-size:12px;color:var(--muted);font-weight:550}
+.qty .plus,.qty .eq{font-size:15px;font-weight:650;color:var(--muted)}
+.expiry-line{margin-top:9px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-block;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:700}
+.badge.expiry{background:#fff4df;color:#916325}
+.badge.no-expiry{background:#eef1f3;color:#6e7579}
+.actions{display:flex;gap:8px;margin-top:11px}
+.actions button{
+  flex:1;border:1px solid var(--line);background:#fff;border-radius:13px;padding:8px;color:var(--ink)
+}
+.actions .count{
+  background:linear-gradient(135deg,#e7f8ee,#ddf5ef);
+  border-color:#aedad0;
+  color:#3f7565;
+  font-weight:800;
+  box-shadow:0 4px 12px rgba(82,145,124,.13);
+}
+.actions .count:hover{
+  background:linear-gradient(135deg,#dcf4e6,#d1eee7);
+  border-color:#99cbbd;
+  box-shadow:0 5px 14px rgba(82,145,124,.17);
+  transform:translateY(-1px);
+}
+.actions .edit{
+  background:linear-gradient(135deg,#edf6ff,#f1eaff);
+  border-color:#c8d5eb;
+  color:#5c6f8f;
+  font-weight:800;
+  box-shadow:0 4px 12px rgba(107,128,171,.12)
+}
+.actions .edit:hover{
+  background:linear-gradient(135deg,#e4f1ff,#e9e0fb);
+  border-color:#b7c8e2;
+  box-shadow:0 5px 14px rgba(107,128,171,.17);
+  transform:translateY(-1px);
+}
+.actions .danger{background:#fff6f6;border-color:#efc9cb;color:#aa4850}
+
+.empty{
+  padding:30px 20px;text-align:center;color:var(--muted);
+  border:1.5px dashed #ead3c0;border-radius:19px;background:#fffaf5
+}
+.logic-note{
+  border:1px solid #d7e6dc;background:linear-gradient(180deg,#fbfffd,#eff8f2);
+  border-radius:17px;padding:12px 13px;color:#52705f;font-size:13px;margin:10px 0 12px;line-height:1.6
+}
+.logic-note b{color:#37604a}
+
+.bottomnav{
+  position:fixed;left:50%;bottom:12px;transform:translateX(-50%);
+  width:min(680px,calc(100% - 24px));background:rgba(255,255,255,.94);
+  backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:24px;padding:8px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+  box-shadow:0 15px 45px rgba(84,62,45,.18);z-index:20
+}
+.bottomnav button{
+  border:0;background:transparent;border-radius:16px;padding:9px 4px;color:var(--muted);font-size:12px
+}
+.bottomnav button.active{
+  background:linear-gradient(180deg,#fff7ee,#ffebda);
+  color:#8d582f;font-weight:750;box-shadow:0 3px 10px rgba(176,121,68,.10)
+}
+.bottomnav span{display:block;font-size:20px;margin-bottom:2px}
+.view{display:none}.view.active{display:block}
+
+.storage-tools{display:flex;gap:9px;align-items:center;margin:4px 0 13px}
+.storage-tools .search{margin:0;flex:1}
+.storage-list{display:flex;flex-direction:column;gap:10px}
+.storage-group{
+  border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#fffdf9);
+  box-shadow:0 4px 13px rgba(119,85,58,.05);overflow:hidden
+}
+.storage-group summary{
+  list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 16px;cursor:pointer;font-weight:800
+}
+.storage-group summary::-webkit-details-marker{display:none}
+.storage-group summary:hover{background:#fffaf5}
+.storage-title{display:flex;align-items:center;gap:9px}
+.storage-title .arrow{font-size:11px;color:var(--muted);transition:transform .16s ease}
+.storage-group[open] .storage-title .arrow{transform:rotate(90deg)}
+.storage-body{padding:0 14px 14px}
+.storage-l2{
+  border-top:1px dashed #ecdfd3;padding:11px 2px 4px
+}
+.storage-l2:first-child{border-top:0}
+.storage-l2-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:13px;font-weight:750;margin-bottom:8px
+}
+.storage-l2-head small{color:var(--muted);font-weight:500}
+.storage-l3{display:flex;flex-direction:column;gap:7px}
+.storage-leaf-group{
+  border:1px solid #e8ddd4;background:#fff;border-radius:14px;overflow:hidden
+}
+.storage-leaf-group summary{
+  list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:9px 11px;cursor:pointer;font-size:12px;color:#6f6056;font-weight:750
+}
+.storage-leaf-group summary::-webkit-details-marker{display:none}
+.storage-leaf-group summary:hover{background:#fffaf5}
+.storage-leaf-title{display:flex;gap:7px;align-items:center}
+.storage-leaf-title .arrow{font-size:10px;color:var(--muted);transition:transform .16s ease}
+.storage-leaf-group[open] .storage-leaf-title .arrow{transform:rotate(90deg)}
+.storage-items{
+  border-top:1px dashed #eee1d6;padding:8px 10px 10px;display:flex;flex-direction:column;gap:7px
+}
+.storage-item{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  border:1px solid #eee4dc;border-radius:12px;background:#fffdfb;padding:8px 9px
+}
+.storage-item-main{font-size:12px;line-height:1.45}
+.storage-item-main b{display:block;color:var(--ink);margin-bottom:2px}
+.storage-item-main small{color:var(--muted)}
+.storage-item-qty{font-size:12px;font-weight:800;color:#765b48;white-space:nowrap;padding-top:1px}
+.storage-item-empty{font-size:12px;color:var(--muted);padding:4px 2px}
+
+.storage-stock-badge{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  border:1px solid #b9dccd;
+  background:#e8f7f0;
+  color:#3f735f;
+  border-radius:999px;
+  padding:4px 9px;
+  font-size:11px;
+  font-weight:800;
+}
+.storage-group.has-stock{
+  border-color:#c8dfd3;
+  box-shadow:0 5px 15px rgba(87,137,114,.08);
+}
+.storage-group.has-stock>summary{
+  background:linear-gradient(90deg,#f1fbf6,#fffdf9);
+}
+.storage-l2.has-stock{
+  border:1px solid #d5e7de;
+  background:linear-gradient(90deg,#f6fcf9,#fffdfb);
+  border-radius:15px;
+  padding:10px 10px 8px;
+  margin:7px 0;
+}
+.storage-l2.has-stock + .storage-l2{border-top:0}
+.storage-l2-head.has-stock{
+  padding:2px 1px 4px;
+}
+.storage-leaf-group.has-stock{
+  border-color:#c9e0d5;
+  box-shadow:0 3px 9px rgba(82,132,108,.06);
+}
+.storage-leaf-group.has-stock>summary{
+  background:linear-gradient(90deg,#edf9f3,#fff);
+}
+.storage-leaf-group:not(.has-stock){
+  opacity:.72;
+}
+
+.storage-empty{
+  padding:28px 16px;text-align:center;color:var(--muted);
+  border:1.5px dashed #ead3c0;border-radius:19px;background:#fffaf5
+}
+
+
+.history-filter-all.active{background:#fff0e3;border-color:#e6c3a3;color:#8f5a31}
+.history-filter-add{background:#eef9f3!important;border-color:#c8e6d5!important;color:#3d7559!important}
+.history-filter-purchase{background:#fff6e8!important;border-color:#ead3a6!important;color:#8a672d!important}
+.history-filter-count{background:#f4efff!important;border-color:#d9ccf1!important;color:#6c5793!important}
+.history-filter-move{background:#eef4ff!important;border-color:#cddcf2!important;color:#506f9d!important}
+.history-filter-add.active,.history-filter-purchase.active,.history-filter-count.active,.history-filter-move.active{
+  box-shadow:inset 0 0 0 2px rgba(90,70,55,.13);font-weight:850
+}
+
+.list{display:flex;flex-direction:column;gap:10px}
+.history{
+  border:1px solid var(--line);border-radius:18px;padding:13px;
+  background:linear-gradient(180deg,#fff,#fffdf9);box-shadow:0 3px 10px rgba(119,85,58,.04)
+}
+.history strong{display:block}.history small{color:var(--muted);line-height:1.6;font-size:13px}
+.history-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px
+}
+.history-head strong{flex:1;min-width:0}
+.history-delete{
+  flex:0 0 auto;width:30px;height:30px;border:1px solid #efc8d0;border-radius:10px;
+  background:#fff6f7;color:#a94755;font-size:20px;line-height:1;display:grid;place-items:center;padding:0
+}
+.history-delete:hover{background:#fdecee}
+.history-delete:active{transform:scale(.96)}
+.history-cat{
+  display:inline-block;min-width:54px;text-align:center;border-radius:999px;padding:5px 10px;
+  margin-right:8px;font-size:12px;font-weight:800;vertical-align:1px
+}
+.history-cat.purchase{background:#fff0d6;color:#8a672d}
+.history-cat.count{background:#f1ecff;color:#7055a3}
+.history-cat.move{background:#eaf2ff;color:#496b9d}
+.history-cat.add{background:#eaf7f1;color:#34785b}
+
+.modalback{
+  position:fixed;inset:0;background:rgba(60,45,34,.38);display:none;
+  align-items:flex-start;justify-content:center;z-index:50;padding:6vh 10px 10px;backdrop-filter:blur(3px)
+}
+.modalback.show{display:flex}
+.modal{
+  background:linear-gradient(180deg,#fff,#fffdf9);width:min(720px,100%);max-height:92vh;overflow:auto;
+  border:1px solid #eee0d3;border-radius:28px 28px 20px 20px;padding:21px;
+  box-shadow:0 24px 70px rgba(0,0,0,.20)
+}
+.modal h3{margin:0 0 6px}.modal p{color:var(--muted);margin:0 0 16px;line-height:1.55}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.field{margin:10px 0}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:650}
+.field input,.field select,.field textarea{
+  width:100%;border:1px solid var(--line);border-radius:15px;padding:11px 12px;
+  background:#fff;color:var(--ink);outline:none
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:#d9b188;box-shadow:0 0 0 3px rgba(208,157,109,.16)
+}
+.field textarea{min-height:74px;resize:vertical}
+.modal-actions{display:flex;gap:10px;position:sticky;bottom:-21px;background:#fffdf9;padding:16px 0 0}
+.readonly-info{
+  border:1px solid var(--line);border-radius:15px;padding:11px 12px;
+  background:#fffaf5;color:var(--muted);font-size:13px;line-height:1.55
+}
+.readonly-info b{color:var(--ink);font-size:15px}
+.total-preview{
+  border:1px solid #ead4c0;background:linear-gradient(180deg,#fffaf4,#fff2e6);
+  border-radius:15px;padding:11px 12px;color:#765641;font-size:13px;margin:10px 0
+}
+.total-preview b{font-size:17px;color:#8d5832}
+.checkbox-line{display:flex;align-items:center;gap:8px;margin:8px 0}
+.checkbox-line input{width:auto}
+.checkbox-line label{margin:0;color:var(--ink);font-weight:600}
+.location-preview{
+  margin-top:8px;border:1px dashed #dfccb9;background:#fffaf5;border-radius:14px;padding:9px 11px;
+  color:#7b6758;font-size:12px;line-height:1.55
+}
+
+.toast-wrap{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);
+  z-index:200;pointer-events:none;width:min(420px,calc(100% - 28px));
+}
+.toast{
+  opacity:0;transform:translateY(-12px) scale(.98);transition:.2s;
+  border:1px solid #bddfc9;box-shadow:0 12px 36px rgba(83,62,45,.20);
+  border-radius:17px;padding:13px 17px;text-align:center;font-weight:800;
+  background:#eaf8f0;color:#2f7654
+}
+.toast.show{opacity:1;transform:translateY(0) scale(1)}
+
+@media(max-width:760px){
+  .app{padding:12px 12px 94px}
+  .inventory{grid-template-columns:1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .brand small{display:none}
+  .brand h1{font-size:21px}
+  .logo{width:45px;height:45px}
+  .modalback{padding:3vh 0 0}
+  .modal{padding:18px 16px;border-radius:25px 25px 0 0;max-height:94vh}
+  .section-head{align-items:flex-start;flex-direction:column}
+  .head-actions{width:100%}
+  .head-actions button{flex:1}
+}
+@media(max-width:520px){
+  .item-top{display:block}
+  .qty{max-width:none;text-align:left;margin-top:10px}
+}
+
+/* ===== v1.4：盤點只維護數量 ===== */
+.count-summary{
+  border:1px solid #ead4c0;
+  background:linear-gradient(180deg,#fffaf4,#fff2e6);
+  border-radius:15px;
+  padding:12px 13px;
+  color:#765641;
+  font-size:12px;
+  line-height:1.7;
+  margin:10px 0;
+}
+.count-summary .summary-title{
+  font-weight:850;
+  color:#5f5047;
+  font-size:13px;
+  margin-bottom:2px;
+}
+.count-summary .summary-row{color:var(--muted)}
+.count-summary .summary-row b{color:var(--ink)}
+.count-summary .summary-row.expiry-row,
+.count-summary .summary-row.expiry-row b{
+  font-size:14px;
+  color:#8c6536;
+  font-weight:800;
+}
+.count-summary .summary-result{
+  margin-top:7px;
+  padding-top:7px;
+  border-top:1px dashed #e5cdb9;
+  font-size:13px;
+}
+.count-summary .summary-result b{
+  color:#8d5832;
+  font-size:17px;
+}
+
+/* ===== 編輯庫存批次 ===== */
+.edit-batch-preview{
+  border:1px solid #d8dff0;
+  background:linear-gradient(180deg,#fbfcff,#f3f0ff);
+  border-radius:15px;
+  padding:11px 12px;
+  font-size:12px;
+  line-height:1.7;
+  color:#687087;
+  margin:10px 0;
+}
+.edit-batch-preview b{color:#53627f}
+.edit-batch-preview .expiry-display{
+  font-size:14px;
+  color:#755a8e;
+  font-weight:800;
+}
+
+/* ===== 所有保存期限顯示放大 ===== */
+.badge.expiry,
+.badge.no-expiry{
+  font-size:13px;
+  padding:6px 10px;
+}
+.expiry-display{
+  font-size:14px !important;
+  font-weight:800;
+  line-height:1.5;
+}
+.field.expiry-field label{
+  font-size:14px;
+  font-weight:800;
+}
+.field.expiry-field input,
+.field.expiry-field select{
+  font-size:15px;
+  font-weight:700;
+}
+.storage-expiry{
+  display:block;
+  margin-top:2px;
+  font-size:13px !important;
+  font-weight:750;
+  color:#8b6947 !important;
+}
+.history-expiry{
+  font-size:13px;
+  font-weight:750;
+}
+
+/* ===== 收納：整體字體放大、批數靠近名稱 ===== */
+.storage-group summary{
+  justify-content:flex-start;
+  font-size:16px;
+}
+.storage-title{
+  gap:8px;
+  align-items:center;
+}
+.storage-l2-head{
+  justify-content:flex-start;
+  font-size:15px;
+  gap:8px;
+}
+.storage-leaf-group summary{
+  justify-content:flex-start;
+  font-size:14px;
+  gap:8px;
+}
+.storage-leaf-title{
+  gap:7px;
+  align-items:center;
+}
+.storage-item-main{
+  font-size:14px;
+  line-height:1.55;
+}
+.storage-item-main b{font-size:14px}
+.storage-item-qty{font-size:14px}
+.storage-stock-badge{
+  margin-left:2px;
+  font-size:12px;
+  padding:4px 9px;
+}
+.storage-l2.has-stock{
+  padding:11px 11px 9px;
+}
+
+
+
+/* ===== 位置維護 ===== */
+.location-manager{
+  display:grid;
+  grid-template-columns:0.9fr 1.25fr;
+  gap:14px;
+}
+.location-create-box,
+.location-tree-box{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:#fffdf9;
+  padding:14px;
+}
+.location-create-box h4,
+.location-tree-box h4{
+  margin:0 0 5px;
+  font-size:15px;
+}
+.location-box-desc{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.55;
+  margin-bottom:10px;
+}
+.location-parent-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+.location-maint-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  max-height:48vh;
+  overflow:auto;
+  padding-right:3px;
+}
+.location-maint-l1{
+  border:1px solid #d7e7de;
+  background:linear-gradient(180deg,#fbfffd,#f2faf6);
+  border-radius:15px;
+  padding:10px;
+}
+.location-maint-l2{
+  margin:7px 0 0 18px;
+  border-left:2px solid #e4ddd7;
+  padding-left:9px;
+}
+.location-maint-l3{
+  margin:6px 0 0 18px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.location-maint-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  min-height:30px;
+}
+.location-maint-name{
+  min-width:0;
+  font-size:13px;
+  font-weight:750;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.location-maint-l1>.location-maint-row .location-maint-name{
+  font-size:15px;
+}
+.location-maint-actions{
+  display:flex;
+  gap:5px;
+  flex:0 0 auto;
+}
+.location-maint-actions button{
+  border:1px solid #dfd4cb;
+  background:#fff;
+  color:#6d6158;
+  border-radius:9px;
+  padding:4px 7px;
+  font-size:11px;
+}
+.location-maint-actions button:hover{
+  background:#fff8f2;
+}
+.location-maint-actions .loc-delete{
+  color:#a74b52;
+  border-color:#ecc8cc;
+  background:#fff7f7;
+}
+.location-chip-row{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  border:1px solid #e3ddd8;
+  background:#fff;
+  border-radius:11px;
+  padding:5px 7px;
+}
+.location-chip-row .location-maint-name{
+  font-size:12px;
+  font-weight:650;
+}
+.location-empty-note{
+  color:var(--muted);
+  font-size:12px;
+  padding:4px 0;
+}
+@media(max-width:760px){
+  .location-manager{grid-template-columns:1fr}
+  .location-parent-grid{grid-template-columns:1fr}
+  .location-maint-list{max-height:none}
+}
+
+
+#countModal select:disabled{
+  background:#f6f2ef;
+  color:#806f64;
+  opacity:1;
+  -webkit-text-fill-color:#806f64;
+  cursor:not-allowed;
+}
+
+
+.storage-l2 > .storage-items{
+  margin-top:7px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- 位置維護 -->
+<div class="modalback" id="locationManagerModal"><div class="modal">
+  <h3>🗂️ 位置維護</h3>
+  <p>位置最多顯示 3 層。可以新增、重新命名或刪除空的位置；已有庫存使用中的位置不可刪除。</p>
+
+  <div class="location-manager">
+    <div class="location-create-box">
+      <h4>＋ 新增位置</h4>
+      <div class="location-box-desc">先選要新增在哪一層，再指定它的上一層位置。</div>
+
+      <div class="field">
+        <label>新增層級 *</label>
+        <select id="locNewLevel" onchange="syncLocationManagerParents()">
+          <option value="1">第 1 層</option>
+          <option value="2">第 2 層</option>
+          <option value="3">第 3 層</option>
+        </select>
+      </div>
+
+      <div class="location-parent-grid">
+        <div class="field" id="locParent1Field" style="display:none">
+          <label>第 1 層 *</label>
+          <select id="locParent1" onchange="syncLocationManagerParent2()"></select>
+        </div>
+        <div class="field" id="locParent2Field" style="display:none">
+          <label>第 2 層 *</label>
+          <select id="locParent2"></select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>位置名稱 *</label>
+        <input id="locNewName" placeholder="例如 冰箱 / 食品櫃 / 第二層">
+      </div>
+
+      <button class="btn primary" style="width:100%" onclick="addLocation()">新增位置</button>
+    </div>
+
+    <div class="location-tree-box">
+      <h4>編輯或刪除 目前的位置</h4>
+      <div class="location-box-desc">點選鉛筆可以改名；刪除功能只允許目前沒有庫存使用的位置。</div>
+      <div id="locationMaintList" class="location-maint-list"></div>
+    </div>
+  </div>
+
+  <div class="modal-actions">
+    <button class="btn primary grow" onclick="closeModal('locationManagerModal')">完成</button>
+  </div>
+</div></div>
+
+<div class="toast-wrap"><div id="toast" class="toast"></div></div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">🏡</div>
+      <div><h1>小日倉</h1><small>把每天用得到的東西，收得清清楚楚 ♡</small></div>
+    </div>
+    <button class="iconbtn" onclick="showToast('⚙️ 設定頁之後再接～')">⚙️ 設定</button>
+  </div>
+
+  <main id="things" class="view active">
+    <div class="section">
+      <div class="section-head">
+        <div><h3>📦 我的物品</h3><div class="sub">有什麼、剩多少、放哪裡、哪一批先到期，一眼就找到</div></div>
+        <div class="head-actions">
+          <button class="btn head-add" onclick="openNewItem()">＋ 新增品項</button>
+          <button class="btn head-purchase" onclick="openPurchase()">🛍️ 新增採購</button>
+          <button class="btn head-count" onclick="openCount()">📋 盤點</button>
+        </div>
+      </div>
+<input id="searchBox" class="search" placeholder="搜尋品項、類型、位置、保存期限…" oninput="renderInventory()" />
+      <div class="chips" id="typeChips"></div>
+      <div id="inventoryList" class="inventory"></div>
+    </div>
+  </main>
+
+  <main id="storage" class="view">
+    <div class="section">
+      <div class="section-head">
+        <div><h3>🗂️ 我的收納</h3><div class="sub">先看大空間，需要時再展開櫃子與層架；位置很多也不會一次塞滿畫面</div></div>
+        <button class="btn primary" onclick="openLocationManager()">⚙️ 位置維護</button>
+      </div>
+
+      <div class="storage-tools">
+        <input id="storageSearchBox" class="search" placeholder="搜尋空間、櫃子、抽屜、層架…" oninput="renderStorage()" />
+      </div>
+
+      <div id="storageList" class="storage-list"></div>
+    </div>
+  </main>
+
+  <main id="history" class="view">
+    <div class="section">
+      <div class="section-head">
+        <div><h3>📖 小日倉日記</h3><div class="sub">採購、盤點、移動與新增都幫你留著</div></div>
+        <button class="btn" onclick="showToast('CSV 匯出之後再接～')">匯出 CSV</button>
+      </div>
+
+      <input id="historySearchBox" class="search" placeholder="搜尋日期、品項、類型、位置、通路、優惠備註、內容…" oninput="renderHistory()" />
+
+      <div class="chips" id="historyFilterChips" style="margin-bottom:12px"></div>
+      <div id="historyList" class="list"></div>
+    </div>
+  </main>
+</div>
+
+<nav class="bottomnav">
+  <button class="active" data-view="things" onclick="showView('things')"><span>📦</span>物品</button>
+  <button data-view="storage" onclick="showView('storage')"><span>🗂️</span>收納</button>
+  <button data-view="history" onclick="showView('history')"><span>📊</span>記錄</button>
+</nav>
+
+<!-- 新增品項：只建 Master -->
+<div class="modalback" id="itemModal"><div class="modal">
+  <h3>🌱 新增品項</h3>
+  <p>先建立「這是什麼東西」。存放位置、保存期限與實際數量會在「新增採購」或盤點時處理。</p>
+
+  <div class="grid2">
+    <div class="field">
+      <label>類型 *</label>
+      <select id="newType">
+        <option value="食品">🍪 食品</option>
+        <option value="飲料">🥤 飲料</option>
+        <option value="日用品">🧻 日用品</option>
+        <option value="清潔">🧴 清潔</option>
+        <option value="美妝保養">💄 美妝保養</option>
+        <option value="醫藥保健">💊 醫藥／保健</option>
+        <option value="3C耗材">🔌 3C／耗材</option>
+        <option value="其他">📦 其他</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>品項名稱 *</label>
+      <input id="newName" placeholder="例如 辛拉麵">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="field">
+      <label>基本單位 *</label>
+      <input id="newBase" value="包" placeholder="包、罐、瓶、條…">
+    </div>
+    <div class="field">
+      <label>整組單位（沒有可空白）</label>
+      <input id="newOuter" value="袋" placeholder="袋、箱、串、組…">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>每組有幾個基本單位</label>
+    <input id="newPer" type="number" min="1" value="5">
+  </div>
+
+  <div class="field">
+    <label>備註</label>
+    <textarea id="newNote" placeholder="（有需要再填就好～）"></textarea>
+  </div>
+
+  <div class="modal-actions">
+    <button class="btn grow" onclick="closeModal('itemModal')">取消</button>
+    <button class="btn primary grow" onclick="saveNewItem()">新增</button>
+  </div>
+</div></div>
+
+<!-- 新增採購 -->
+<div class="modalback" id="purchaseModal"><div class="modal">
+  <h3>🛍️ 新增採購</h3>
+  <p>選品項後，填這次買回來的數量、位置與保存期限。小日倉會自動判斷要併入既有批次，還是建立新批次。</p>
+
+  <div class="grid2">
+    <div class="field">
+      <label>類型 *</label>
+      <select id="purchaseType" onchange="syncPurchaseItemsByType()"></select>
+    </div>
+    <div class="field">
+      <label>品項 *</label>
+      <select id="purchaseItem" onchange="syncPurchaseItem()"></select>
+    </div>
+  </div>
+
+  <div class="readonly-info" id="purchaseItemInfo"></div>
+
+  <div class="grid2">
+    <div class="field" id="purchaseOuterField">
+      <label id="purchaseOuterLabel">買了幾袋 *</label>
+      <input id="purchaseOuter" type="number" min="0" value="1" oninput="updatePurchasePreview()">
+    </div>
+    <div class="field">
+      <label id="purchaseLooseLabel">另外買幾包</label>
+      <input id="purchaseLoose" type="number" min="0" value="0" oninput="updatePurchasePreview()">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>存放位置 *</label>
+    <div class="grid3">
+      <select id="purchaseLoc1" onchange="syncLocation2();updatePurchasePreview()"></select>
+      <select id="purchaseLoc2" onchange="syncLocation3();updatePurchasePreview()"></select>
+      <select id="purchaseLoc3" onchange="updatePurchasePreview()"></select>
+    </div>
+    <div class="location-preview">📍 <span id="purchaseLocationText">—</span></div>
+  </div>
+
+  <div class="checkbox-line">
+    <input id="purchaseNoExpiry" type="checkbox" onchange="togglePurchaseExpiry()">
+    <label for="purchaseNoExpiry">這批沒有保存期限</label>
+  </div>
+  <div class="field expiry-field" id="purchaseExpiryField">
+    <label>保存期限 *</label>
+    <input id="purchaseExpiry" type="date" value="2026-12-15" onchange="updatePurchasePreview()">
+  </div>
+
+  <div class="grid2">
+    <div class="field">
+      <label>購買日期 *</label>
+      <input id="purchaseDate" type="date" value="2026-08-09">
+    </div>
+    <div class="field">
+      <label>通路</label>
+      <input id="purchaseStore" placeholder="全聯 / 蝦皮 / 寶雅…">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="field">
+      <label>本次實付總額（NT$） *</label>
+      <input id="purchasePaidTotal" type="number" min="0" step="1" value="0" placeholder="例如 150" oninput="updatePurchasePreview()">
+      <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5">
+        79 折、2 袋 150、買一送一都直接填這次實際付掉的總額。
+      </div>
+    </div>
+    <div class="field">
+      <label>優惠備註</label>
+      <input id="purchasePromo" placeholder="例如 79 折 / 2 袋 150 / 買一送一">
+    </div>
+  </div>
+
+  <div class="total-preview" id="purchasePreview"></div>
+
+  <div class="modal-actions">
+    <button class="btn grow" onclick="closeModal('purchaseModal')">取消</button>
+    <button class="btn primary grow" onclick="savePurchase()">加入庫存</button>
+  </div>
+</div></div>
+
+<!-- 盤點 -->
+<div class="modalback" id="countModal"><div class="modal">
+  <h3 id="countModalTitle">📋 盤點：單一批次</h3>
+  <p id="countModalDesc">盤點只更新數量；若要修改存放位置與保存期限請使用「編輯」。</p>
+
+  <div class="grid2">
+    <div class="field">
+      <label>類型 *</label>
+      <select id="countType" onchange="syncCountItems()"></select>
+    </div>
+    <div class="field">
+      <label>品項 *</label>
+      <select id="countItem" onchange="syncCountBatchOptions()"></select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>批次 *</label>
+    <select id="countBatchChoice" onchange="syncCountBatch()"></select>
+  </div>
+
+  <div class="grid2">
+    <div class="field" id="countOuterField">
+      <label id="countOuterLabel"></label>
+      <input id="countOuter" type="number" min="0" oninput="updateCountPreview()">
+    </div>
+    <div class="field">
+      <label id="countLooseLabel"></label>
+      <input id="countLoose" type="number" min="0" oninput="updateCountPreview()">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>盤點日期 *</label>
+    <input id="countDate" type="date" value="2026-08-09">
+  </div>
+
+  <div class="count-summary" id="countPreview"></div>
+
+  <div class="modal-actions">
+    <button class="btn grow" onclick="closeCountModal()">取消</button>
+    <button class="btn primary grow" onclick="saveCount()">完成</button>
+  </div>
+</div></div>
+
+<!-- 編輯庫存批次 -->
+<div class="modalback" id="editBatchModal"><div class="modal">
+  <h3>✏️ 編輯庫存批次</h3>
+  <p>編輯只維護存放位置與保存期限；實際數量請使用「盤點」。</p>
+
+  <input type="hidden" id="editBatchId">
+
+  <div class="readonly-info" id="editBatchItemInfo"></div>
+
+  <div class="field">
+    <label>存放位置 *</label>
+    <div class="grid3">
+      <select id="editLoc1" onchange="syncEditLoc2()"></select>
+      <select id="editLoc2" onchange="syncEditLoc3()"></select>
+      <select id="editLoc3" onchange="updateEditPreview()"></select>
+    </div>
+</div>
+
+  <div class="checkbox-line">
+    <input id="editNoExpiry" type="checkbox" onchange="toggleEditExpiry()">
+    <label for="editNoExpiry">這批沒有保存期限</label>
+  </div>
+
+  <div class="field expiry-field" id="editExpiryField">
+    <label>保存期限 *</label>
+    <input id="editExpiry" type="date" onchange="updateEditPreview()">
+  </div>
+
+  <div class="edit-batch-preview" id="editBatchPreview"></div>
+
+  <div class="modal-actions">
+    <button class="btn grow" onclick="closeModal('editBatchModal')">取消</button>
+    <button class="btn primary grow" onclick="saveEditBatch()">儲存</button>
+  </div>
+</div></div>
+
+<div class="toast-wrap"><div id="toast" class="toast"></div></div>
+
+<script>
+const TYPE_META={
+  '食品':{icon:'🍪',cls:'type-food'},
+  '飲料':{icon:'🥤',cls:'type-drink'},
+  '日用品':{icon:'🧻',cls:'type-daily'},
+  '清潔':{icon:'🧴',cls:'type-clean'},
+  '美妝保養':{icon:'💄',cls:'type-beauty'},
+  '醫藥保健':{icon:'💊',cls:'type-health'},
+  '3C耗材':{icon:'🔌',cls:'type-tech'},
+  '其他':{icon:'📦',cls:'type-other'}
+};
+const TYPES=['全部',...Object.keys(TYPE_META)];
+let filterType='全部';
+let historyFilter='全部';
+let countSpecifiedBatchId='';
+let toastTimer=null;
+
+const STORAGE_ICONS={'廚房':'🍳','客廳':'🛋️','房間':'🛏️','浴室':'🛁','陽台':'🧺'};
+
+let historyEvents=[
+  {id:'h1',datetime:'2026/08/09 00:44:38',kind:'採購',type:'食品',name:'辛拉麵',detail:'2 袋 = 10 包・廚房 -- 食品櫃 -- 第二層・期限 2026/12/15・全聯・本次實付 NT$ 150・2 袋 150'},
+  {id:'h2',datetime:'2026/08/09 00:39:12',kind:'盤點',type:'食品',name:'辛拉麵',detail:'15 包 → 13 包（2 袋 + 3 包）・廚房 -- 食品櫃 -- 第二層'},
+  {id:'h3',datetime:'2026/08/08 21:16:05',kind:'採購',type:'飲料',name:'Coca-Cola Zero 330ml',detail:'1 箱 = 24 罐・廚房 -- 食品櫃 -- 第二層・期限 2026/11/03・家樂福・本次實付 NT$ 299'},
+  {id:'h4',datetime:'2026/08/07 19:08:41',kind:'移動',type:'3C耗材',name:'Type-C 充電線 1m',detail:'客廳 -- 電視櫃 -- 左櫃 → 房間 -- 書桌 -- 第二抽屜'},
+  {id:'h5',datetime:'2026/08/06 20:02:17',kind:'新增',type:'日用品',name:'抽取式衛生紙 100抽',detail:'建立品項・基本單位 包・每串 6 包'}
+];
+
+let itemMasters=[
+  {id:'m1',type:'食品',name:'辛拉麵',base:'包',outer:'袋',per:5,note:''},
+  {id:'m2',type:'飲料',name:'Coca-Cola Zero 330ml',base:'罐',outer:'箱',per:24,note:''},
+  {id:'m3',type:'日用品',name:'抽取式衛生紙 100抽',base:'包',outer:'串',per:6,note:''},
+  {id:'m4',type:'清潔',name:'白蘭洗衣精補充瓶',base:'瓶',outer:'',per:0,note:''},
+  {id:'m5',type:'3C耗材',name:'Type-C 充電線 1m',base:'條',outer:'',per:0,note:''},
+  {id:'m6',type:'醫藥保健',name:'人工淚液',base:'支',outer:'盒',per:10,note:''}
+];
+
+let batches=[
+  {id:'b1',itemId:'m1',total:13,loc1:'廚房',loc2:'食品櫃',loc3:'第二層',expiry:'2026-08-28'},
+  {id:'b2',itemId:'m1',total:5,loc1:'廚房',loc2:'食品櫃',loc3:'第二層',expiry:'2026-12-15'},
+  {id:'b3',itemId:'m2',total:31,loc1:'廚房',loc2:'食品櫃',loc3:'第二層',expiry:'2026-11-03'},
+  {id:'b4',itemId:'m3',total:15,loc1:'客廳',loc2:'收納櫃',loc3:'上層',expiry:''},
+  {id:'b5',itemId:'m4',total:2,loc1:'陽台',loc2:'',loc3:'',expiry:''},
+  {id:'b6',itemId:'m5',total:3,loc1:'房間',loc2:'書桌',loc3:'第二抽屜',expiry:''},
+  {id:'b7',itemId:'m6',total:23,loc1:'房間',loc2:'床頭櫃',loc3:'',expiry:'2027-03-10'}
+];
+
+let LOCATION_TREE={
+  '廚房':{
+    '冰箱':['冷藏上層','冷藏下層','冷凍庫'],
+    '食品櫃':['第一層','第二層','第三層'],
+    '流理台下':['左櫃','右櫃']
+  },
+  '客廳':{
+    '收納櫃':['上層','中層','下層'],
+    '電視櫃':['左櫃','右櫃'],
+    '茶几':['抽屜']
+  },
+  '房間':{
+    '書桌':['第一抽屜','第二抽屜','第三抽屜'],
+    '衣櫃':['上層','中層','下層'],
+    '床頭櫃':['']
+  },
+  '浴室':{
+    '洗手台下':['左側','右側'],
+    '鏡櫃':['上層','下層']
+  },
+  '陽台':{
+    '':['']
+  }
+};
+
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fmt(n){return Number(n||0).toLocaleString('zh-TW')}
+function metaOf(type){return TYPE_META[type]||TYPE_META['其他']}
+function masterOf(id){return itemMasters.find(x=>x.id===id)}
+function locationText(b){return [b.loc1,b.loc2,b.loc3].filter(Boolean).join(' -- ')}
+function stockKey(b){return [b.itemId,b.loc1||'',b.loc2||'',b.loc3||'',b.expiry||''].join('§')}
+function qtyParts(m,total){
+  total=Math.max(0,Number(total)||0);
+  if(!m.outer||!m.per)return {outer:0,loose:total};
+  return {outer:Math.floor(total/m.per),loose:total%m.per};
+}
+function qtyHTML(m,total){
+  const p=qtyParts(m,total);
+  if(!m.outer||!m.per)return `${fmt(total)}<small> ${esc(m.base)}</small>`;
+  if(p.outer===0)return `${fmt(p.loose)}<small> ${esc(m.base)}</small>`;
+  if(p.loose===0)return `${fmt(p.outer)}<small> ${esc(m.outer)}</small><span class="eq"> = </span>${fmt(total)}<small> ${esc(m.base)}</small>`;
+  return `${fmt(p.outer)}<small> ${esc(m.outer)}</small><span class="plus"> + </span>${fmt(p.loose)}<small> ${esc(m.base)}</small><span class="eq"> = </span>${fmt(total)}<small> ${esc(m.base)}</small>`;
+}
+function qtyText(m,total){
+  const p=qtyParts(m,total);
+  if(!m.outer||!m.per)return `${fmt(total)} ${m.base}`;
+  if(p.outer===0)return `${fmt(p.loose)} ${m.base}`;
+  if(p.loose===0)return `${fmt(p.outer)} ${m.outer} = ${fmt(total)} ${m.base}`;
+  return `${fmt(p.outer)} ${m.outer} + ${fmt(p.loose)} ${m.base} = ${fmt(total)} ${m.base}`;
+}
+function batchCard(b){
+  const m=masterOf(b.itemId);
+  const tm=metaOf(m.type);
+  const packMeta=m.outer&&m.per?`每${m.outer} ${fmt(m.per)} ${m.base}`:`單位：${m.base}`;
+  return `<div class="item ${tm.cls}">
+    <div class="item-top">
+      <div>
+        <h4>${tm.icon} ${esc(m.type)}｜${esc(m.name)}</h4>
+        <div class="meta">放置位置：${esc(locationText(b))}<br>${packMeta}</div>
+      </div>
+      <div class="qty">${qtyHTML(m,b.total)}</div>
+    </div>
+    <div class="expiry-line">
+      ${b.expiry?`<span class="badge expiry">⏰ ${esc(b.expiry)}</span>`:`<span class="badge no-expiry">∞ 無保存期限</span>`}
+    </div>
+    <div class="actions">
+      <button class="count" onclick="openCount('${b.id}')">盤點</button>
+      <button class="edit" onclick="openEdit('${b.id}')">編輯</button>
+      <button class="danger" onclick="showToast('🗑️ 雛型先不真的刪除～')">刪除</button>
+    </div>
+  </div>`;
+}
+function renderTypeChips(){
+  document.getElementById('typeChips').innerHTML=TYPES.map(t=>{
+    const label=t==='全部'?'全部':`${metaOf(t).icon} ${t==='醫藥保健'?'醫藥／保健':t==='3C耗材'?'3C／耗材':t}`;
+    return `<button class="chip ${filterType===t?'active':''}" onclick="filterType='${t}';renderTypeChips();renderInventory()">${label}</button>`;
+  }).join('');
+}
+function renderInventory(){
+  const q=(document.getElementById('searchBox')?.value||'').trim().toLocaleLowerCase('zh-TW');
+  const xs=batches.filter(b=>{
+    const m=masterOf(b.itemId);
+    const hay=[m.type,m.name,locationText(b),b.expiry||'無保存期限'].join(' ').toLocaleLowerCase('zh-TW');
+    return (filterType==='全部'||m.type===filterType) && (!q||hay.includes(q));
+  });
+  document.getElementById('inventoryList').innerHTML=xs.length?xs.map(batchCard).join(''):'<div class="empty" style="grid-column:1/-1">還沒有符合的物品 👀</div>';
+}
+
+function batchesAtLocation(l1,l2='',l3=''){
+  return batches.filter(b=>
+    b.loc1===l1 &&
+    b.loc2===l2 &&
+    b.loc3===l3
+  );
+}
+function batchesUnderLocation(l1,l2=null){
+  return batches.filter(b=>
+    b.loc1===l1 &&
+    (l2===null || b.loc2===l2)
+  );
+}
+function renderStorageItems(xs){
+  if(!xs.length)return '<div class="storage-item-empty">目前沒有物品</div>';
+  return xs.map(b=>{
+    const m=masterOf(b.itemId),tm=metaOf(m.type);
+    return `<div class="storage-item">
+      <div class="storage-item-main">
+        <b>${tm.icon} ${esc(m.type==='醫藥保健'?'醫藥／保健':m.type==='3C耗材'?'3C／耗材':m.type)}｜${esc(m.name)}</b>
+        <small class="storage-expiry">${b.expiry?`保存期限 ${esc(b.expiry)}`:'無保存期限'}</small>
+      </div>
+      <div class="storage-item-qty">${qtyText(m,b.total)}</div>
+    </div>`;
+  }).join('');
+}
+function storageBadge(count){
+  return count>0?`<span class="storage-stock-badge">${count} 批</span>`:'';
+}
+function renderStorage(){
+  const q=(document.getElementById('storageSearchBox')?.value||'').trim().toLocaleLowerCase('zh-TW');
+  const groups=[];
+
+  Object.entries(LOCATION_TREE).forEach(([l1,l2Map])=>{
+    const l2Rows=[];
+
+    Object.entries(l2Map).forEach(([l2,l3s])=>{
+      const leaves=(l3s||['']).map(l3=>{
+        const xs=batchesAtLocation(l1,l2,l3);
+        const itemText=xs.map(b=>{
+          const m=masterOf(b.itemId);
+          return `${m.type} ${m.name} ${b.expiry||'無保存期限'}`;
+        }).join(' ');
+        return {
+          l3,
+          xs,
+          count:xs.length,
+          hay:`${l1} ${l2} ${l3} ${itemText}`.toLocaleLowerCase('zh-TW')
+        };
+      });
+
+      const visibleLeaves=q ? leaves.filter(x=>x.hay.includes(q)) : leaves;
+      const l2Direct=`${l1} ${l2}`.toLocaleLowerCase('zh-TW').includes(q);
+
+      if(!q || visibleLeaves.length || l2Direct){
+        l2Rows.push({
+          l2,
+          leaves:q&&l2Direct?leaves:visibleLeaves,
+          count:batchesUnderLocation(l1,l2).length
+        });
+      }
+    });
+
+    const l1Direct=l1.toLocaleLowerCase('zh-TW').includes(q);
+    if(!q || l2Rows.length || l1Direct){
+      groups.push({
+        l1,
+        l2Rows,
+        count:batchesUnderLocation(l1).length
+      });
+    }
+  });
+
+  const host=document.getElementById('storageList');
+  if(!host)return;
+
+  if(!groups.length){
+    host.innerHTML='<div class="storage-empty">找不到符合的位置或物品 👀</div>';
+    return;
+  }
+
+  host.innerHTML=groups.map((g,idx)=>{
+    const openAttr=(q||idx===0)?' open':'';
+    const groupClass=g.count>0?' has-stock':'';
+
+    const rows=g.l2Rows.map(row=>{
+      const label=row.l2||'（直接放在這層）';
+      const rowClass=row.count>0?' has-stock':'';
+
+      if(!row.l2){
+        const direct=batchesAtLocation(g.l1,'','');
+        // 第一層就直接放物品時，不再額外包一層「（直接放在這層）」。
+        return `<div class="storage-items">${renderStorageItems(direct)}</div>`;
+      }
+
+      // 如果這個第二層沒有實際的第三層，就直接把物品顯示在第二層下面，
+      // 不另外做「直接放在這層」的摺疊。
+      const hasRealThirdLevel=row.leaves.some(leaf=>String(leaf.l3||'').trim()!=='');
+      let content='';
+
+      if(!hasRealThirdLevel){
+        const directItems=row.leaves.flatMap(leaf=>leaf.xs||[]);
+        content=`<div class="storage-items">${renderStorageItems(directItems)}</div>`;
+      }else{
+        const leaves=row.leaves.map(leaf=>{
+          const leafLabel=leaf.l3||'（直接放在這層）';
+          const leafOpen=q?' open':'';
+          const leafClass=leaf.count>0?' has-stock':'';
+
+          // 有第三層的情況才需要摺疊。
+          return `<details class="storage-leaf-group${leafClass}"${leafOpen}>
+            <summary>
+              <span class="storage-leaf-title">
+                <span class="arrow">▶</span>
+                <span>${esc(leafLabel)}</span>
+                ${storageBadge(leaf.count)}
+              </span>
+            </summary>
+            <div class="storage-items">${renderStorageItems(leaf.xs)}</div>
+          </details>`;
+        }).join('');
+        content=`<div class="storage-l3">${leaves}</div>`;
+      }
+
+      return `<div class="storage-l2${rowClass}">
+        <div class="storage-l2-head${rowClass}">
+          <span>${esc(label)}</span>
+          ${storageBadge(row.count)}
+        </div>
+        ${content}
+      </div>`;
+    }).join('');
+
+    return `<details class="storage-group${groupClass}"${openAttr}>
+      <summary>
+        <span class="storage-title">
+          <span class="arrow">▶</span>
+          <span>${STORAGE_ICONS[g.l1]||'📦'} ${esc(g.l1)}</span>
+          ${storageBadge(g.count)}
+        </span>
+      </summary>
+      <div class="storage-body">${rows||'<div class="storage-l2">目前沒有子位置</div>'}</div>
+    </details>`;
+  }).join('');
+}
+
+function historyClass(kind){
+  return kind==='新增'?'add':kind==='採購'?'purchase':kind==='盤點'?'count':'move';
+}
+function renderHistoryFilterChips(){
+  const labels=['全部','新增','採購','盤點','移動'];
+  const host=document.getElementById('historyFilterChips');
+  if(!host)return;
+  host.innerHTML=labels.map(label=>{
+    const cls=label==='全部'?'history-filter-all':`history-filter-${historyClass(label)}`;
+    return `<button class="chip ${cls} ${historyFilter===label?'active':''}" onclick="historyFilter='${label}';renderHistoryFilterChips();renderHistory()">${label}</button>`;
+  }).join('');
+}
+function renderHistory(){
+  const q=(document.getElementById('historySearchBox')?.value||'').trim().toLocaleLowerCase('zh-TW');
+  const xs=historyEvents.filter(e=>{
+    const filterOk=historyFilter==='全部'||e.kind===historyFilter;
+    const hay=[e.datetime,e.kind,e.type,e.name,e.detail].join(' ').toLocaleLowerCase('zh-TW');
+    return filterOk && (!q||hay.includes(q));
+  });
+
+  const host=document.getElementById('historyList');
+  if(!host)return;
+
+  host.innerHTML=xs.length?xs.map(e=>{
+    const tm=metaOf(e.type);
+    const cls=historyClass(e.kind);
+    const typeText=e.type==='醫藥保健'?'醫藥／保健':e.type==='3C耗材'?'3C／耗材':e.type;
+    return `<div class="history">
+      <div class="history-head">
+        <strong><span class="history-cat ${cls}">${esc(e.kind)}</span>${tm.icon} ${esc(typeText)}｜${esc(e.name)}</strong>
+        <button class="history-delete" type="button" title="刪除這筆記錄" aria-label="刪除這筆記錄" onclick="deleteHistoryEvent('${e.id}')">×</button>
+      </div>
+      <small>${esc(e.datetime)}・${esc(e.detail)}</small>
+    </div>`;
+  }).join(''):'<div class="empty">沒有符合條件的記錄</div>';
+}
+function deleteHistoryEvent(id){
+  const e=historyEvents.find(x=>x.id===id);
+  if(!e)return;
+  if(!confirm(`確定刪除這筆「${e.kind}」記錄嗎？\n${e.name}\n\n只會刪除這筆歷史記錄，不會改變目前庫存。`))return;
+  historyEvents=historyEvents.filter(x=>x.id!==id);
+  renderHistory();
+  showToast('記錄已刪除');
+}
+
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.bottomnav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+  if(id==='storage')renderStorage();
+  if(id==='history'){renderHistoryFilterChips();renderHistory();}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openModal(id){document.getElementById(id).classList.add('show')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function showToast(message){
+  const el=document.getElementById('toast');
+  clearTimeout(toastTimer);el.textContent=message;el.classList.add('show');
+  toastTimer=setTimeout(()=>el.classList.remove('show'),1900);
+}
+
+/* 新增品項 */
+function openNewItem(){
+  document.getElementById('newType').value='食品';
+  document.getElementById('newName').value='';
+  document.getElementById('newBase').value='包';
+  document.getElementById('newOuter').value='袋';
+  document.getElementById('newPer').value='5';
+  document.getElementById('newNote').value='';
+  openModal('itemModal');
+}
+function saveNewItem(){
+  const type=document.getElementById('newType').value;
+  const name=document.getElementById('newName').value.trim();
+  const base=document.getElementById('newBase').value.trim();
+  const outer=document.getElementById('newOuter').value.trim();
+  const per=outer?Math.max(0,Number(document.getElementById('newPer').value)||0):0;
+  if(!name)return alert('品項名稱要填喔～');
+  if(!base)return alert('基本單位要填喔～');
+  if(outer&&per<=0)return alert('有填整組單位時，每組數量要大於 0。');
+  const dup=itemMasters.find(x=>x.type===type&&x.name.trim().toLowerCase()===name.toLowerCase());
+  if(dup)return alert('這個類型＋品項名稱已經建立過了喔～\n請直接使用「新增採購」。');
+  const id='m'+Date.now();
+  itemMasters.push({id,type,name,base,outer,per,note:document.getElementById('newNote').value.trim()});
+  closeModal('itemModal');
+  renderInventory();
+  showToast('✨ 品項建立完成！接著可以新增採購');
+}
+
+/* 三層位置 */
+function initLocationSelectors(){
+  const l1=document.getElementById('purchaseLoc1');
+  l1.innerHTML=Object.keys(LOCATION_TREE).map(x=>`<option>${x}</option>`).join('');
+  l1.value='廚房';
+  syncLocation2();
+}
+function syncLocation2(){
+  const l1=document.getElementById('purchaseLoc1').value;
+  const l2=document.getElementById('purchaseLoc2');
+  const keys=Object.keys(LOCATION_TREE[l1]||{});
+  l2.innerHTML=keys.map(x=>`<option value="${esc(x)}">${x||'— 無第二層 —'}</option>`).join('');
+  syncLocation3();
+}
+function syncLocation3(){
+  const l1=document.getElementById('purchaseLoc1').value;
+  const l2=document.getElementById('purchaseLoc2').value;
+  const l3=document.getElementById('purchaseLoc3');
+  const xs=(LOCATION_TREE[l1]&&LOCATION_TREE[l1][l2])||[''];
+  l3.innerHTML=xs.map(x=>`<option value="${esc(x)}">${x||'— 無第三層 —'}</option>`).join('');
+  updatePurchasePreview();
+}
+function selectedLocation(){
+  return {
+    loc1:document.getElementById('purchaseLoc1').value,
+    loc2:document.getElementById('purchaseLoc2').value,
+    loc3:document.getElementById('purchaseLoc3').value
+  };
+}
+
+
+/* 位置維護 */
+function locationInUse(level,l1='',l2='',l3=''){
+  return batches.some(b=>{
+    if(level===1)return b.loc1===l1;
+    if(level===2)return b.loc1===l1 && (b.loc2||'')===l2;
+    return b.loc1===l1 && (b.loc2||'')===l2 && (b.loc3||'')===l3;
+  });
+}
+function locationChildrenExist(level,l1='',l2=''){
+  if(level===1){
+    return Object.keys(LOCATION_TREE[l1]||{}).some(x=>x!=='');
+  }
+  if(level===2){
+    return ((LOCATION_TREE[l1]||{})[l2]||[]).some(x=>x!=='');
+  }
+  return false;
+}
+function openLocationManager(){
+  renderLocationMaintList();
+  syncLocationManagerParents();
+  openModal('locationManagerModal');
+}
+function syncLocationManagerParents(){
+  const level=Number(document.getElementById('locNewLevel').value||1);
+  const f1=document.getElementById('locParent1Field');
+  const f2=document.getElementById('locParent2Field');
+
+  f1.style.display=level>=2?'block':'none';
+  f2.style.display=level>=3?'block':'none';
+
+  const p1=document.getElementById('locParent1');
+  p1.innerHTML=Object.keys(LOCATION_TREE).map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+
+  syncLocationManagerParent2();
+}
+function syncLocationManagerParent2(){
+  const level=Number(document.getElementById('locNewLevel').value||1);
+  const l1=document.getElementById('locParent1').value;
+  const p2=document.getElementById('locParent2');
+
+  if(level>=3){
+    const keys=Object.keys(LOCATION_TREE[l1]||{}).filter(x=>x!=='');
+    p2.innerHTML=keys.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+  }else{
+    p2.innerHTML='';
+  }
+}
+function addLocation(){
+  const level=Number(document.getElementById('locNewLevel').value||1);
+  const name=document.getElementById('locNewName').value.trim();
+  if(!name)return alert('請輸入位置名稱。');
+
+  if(level===1){
+    if(LOCATION_TREE[name])return alert('這個第 1 層位置已經存在囉～');
+    LOCATION_TREE[name]={'':['']};
+  }
+
+  if(level===2){
+    const l1=document.getElementById('locParent1').value;
+    if(!l1)return alert('請先選第 1 層位置。');
+    if(Object.prototype.hasOwnProperty.call(LOCATION_TREE[l1]||{},name)){
+      return alert('這個第 2 層位置已經存在囉～');
+    }
+    LOCATION_TREE[l1][name]=[''];
+  }
+
+  if(level===3){
+    const l1=document.getElementById('locParent1').value;
+    const l2=document.getElementById('locParent2').value;
+    if(!l1||!l2)return alert('請先選第 1、2 層位置。');
+
+    const xs=LOCATION_TREE[l1][l2]||[];
+    if(xs.includes(name))return alert('這個第 3 層位置已經存在囉～');
+
+    // 如果原本只有空白占位，新增實際第三層時移除空白占位。
+    LOCATION_TREE[l1][l2]=xs.filter(x=>x!=='');
+    LOCATION_TREE[l1][l2].push(name);
+  }
+
+  document.getElementById('locNewName').value='';
+  renderLocationMaintList();
+  renderStorage();
+  syncLocationManagerParents();
+  showToast('✨ 位置新增完成！');
+}
+function renameLocation(level,l1,l2='',l3=''){
+  const oldName=level===1?l1:level===2?l2:l3;
+  const next=prompt(`把「${oldName||'（未命名）'}」改成：`,oldName);
+  if(next===null)return;
+
+  const name=next.trim();
+  if(!name || name===oldName)return;
+
+  if(level===1){
+    if(LOCATION_TREE[name])return alert('已經有同名的第 1 層位置。');
+
+    const nextTree={};
+    Object.entries(LOCATION_TREE).forEach(([key,value])=>{
+      nextTree[key===l1?name:key]=value;
+    });
+    LOCATION_TREE=nextTree;
+
+    batches.forEach(b=>{
+      if(b.loc1===l1)b.loc1=name;
+    });
+  }
+
+  if(level===2){
+    if(Object.prototype.hasOwnProperty.call(LOCATION_TREE[l1]||{},name)){
+      return alert('這個第 2 層位置已經存在。');
+    }
+
+    const branch=LOCATION_TREE[l1];
+    const nextBranch={};
+    Object.entries(branch).forEach(([key,value])=>{
+      nextBranch[key===l2?name:key]=value;
+    });
+    LOCATION_TREE[l1]=nextBranch;
+
+    batches.forEach(b=>{
+      if(b.loc1===l1 && (b.loc2||'')===l2)b.loc2=name;
+    });
+  }
+
+  if(level===3){
+    const xs=LOCATION_TREE[l1][l2]||[];
+    if(xs.includes(name))return alert('這個第 3 層位置已經存在。');
+
+    LOCATION_TREE[l1][l2]=xs.map(x=>x===l3?name:x);
+    batches.forEach(b=>{
+      if(b.loc1===l1 && (b.loc2||'')===l2 && (b.loc3||'')===l3)b.loc3=name;
+    });
+  }
+
+  renderLocationMaintList();
+  renderStorage();
+  renderInventory();
+  showToast('✏️ 位置名稱已修改！');
+}
+function deleteLocation(level,l1,l2='',l3=''){
+  if(locationInUse(level,l1,l2,l3)){
+    return alert('這個位置目前還有庫存使用中，不能刪除喔～\n請先把裡面的物品移到其他位置。');
+  }
+
+  const display=level===1?l1:level===2?`${l1} -- ${l2}`:`${l1} -- ${l2} -- ${l3}`;
+  const hasChildren=locationChildrenExist(level,l1,l2);
+  const extra=hasChildren?'\n\n這個位置底下還有子位置，也會一起刪除。':'';
+
+  if(!confirm(`確定刪除位置「${display}」嗎？${extra}`))return;
+
+  if(level===1){
+    delete LOCATION_TREE[l1];
+  }else if(level===2){
+    delete LOCATION_TREE[l1][l2];
+    if(!Object.keys(LOCATION_TREE[l1]).length)LOCATION_TREE[l1]={'':['']};
+  }else{
+    LOCATION_TREE[l1][l2]=(LOCATION_TREE[l1][l2]||[]).filter(x=>x!==l3);
+    if(!LOCATION_TREE[l1][l2].length)LOCATION_TREE[l1][l2]=[''];
+  }
+
+  renderLocationMaintList();
+  renderStorage();
+  syncLocationManagerParents();
+  showToast('🗑️ 位置已刪除');
+}
+function renderLocationMaintList(){
+  const host=document.getElementById('locationMaintList');
+  if(!host)return;
+
+  const htmlRows=Object.entries(LOCATION_TREE).map(([l1,l2Map])=>{
+    const l2Rows=Object.entries(l2Map).map(([l2,l3s])=>{
+      if(!l2){
+        return `<div class="location-maint-l2">
+          <div class="location-maint-row">
+            <span class="location-maint-name">（直接放在 ${esc(l1)}）</span>
+          </div>
+        </div>`;
+      }
+
+      const l3Rows=(l3s||['']).filter(x=>x!=='').map(l3=>
+        `<span class="location-chip-row">
+          <span class="location-maint-name">${esc(l3)}</span>
+          <span class="location-maint-actions">
+            <button onclick="renameLocation(3,'${esc(l1)}','${esc(l2)}','${esc(l3)}')" title="重新命名">✏️</button>
+            <button class="loc-delete" onclick="deleteLocation(3,'${esc(l1)}','${esc(l2)}','${esc(l3)}')" title="刪除">×</button>
+          </span>
+        </span>`
+      ).join('');
+
+      return `<div class="location-maint-l2">
+        <div class="location-maint-row">
+          <span class="location-maint-name">${esc(l2)}</span>
+          <span class="location-maint-actions">
+            <button onclick="renameLocation(2,'${esc(l1)}','${esc(l2)}')" title="重新命名">✏️</button>
+            <button class="loc-delete" onclick="deleteLocation(2,'${esc(l1)}','${esc(l2)}')" title="刪除">×</button>
+          </span>
+        </div>
+        <div class="location-maint-l3">
+          ${l3Rows||`<span class="location-empty-note">（直接放在 ${esc(l2)}）</span>`}
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="location-maint-l1">
+      <div class="location-maint-row">
+        <span class="location-maint-name">${STORAGE_ICONS[l1]||'📍'} ${esc(l1)}</span>
+        <span class="location-maint-actions">
+          <button onclick="renameLocation(1,'${esc(l1)}')" title="重新命名">✏️</button>
+          <button class="loc-delete" onclick="deleteLocation(1,'${esc(l1)}')" title="刪除">×</button>
+        </span>
+      </div>
+      ${l2Rows}
+    </div>`;
+  }).join('');
+
+  host.innerHTML=htmlRows||'<div class="location-empty-note">還沒有建立位置</div>';
+}
+
+/* 採購 */
+function populatePurchaseTypes(){
+  const sel=document.getElementById('purchaseType');
+  const types=[...new Set(itemMasters.map(m=>m.type))];
+  sel.innerHTML=types.map(t=>`<option value="${esc(t)}">${metaOf(t).icon} ${t==='醫藥保健'?'醫藥／保健':t==='3C耗材'?'3C／耗材':t}</option>`).join('');
+}
+function syncPurchaseItemsByType(){
+  const type=document.getElementById('purchaseType').value;
+  const sel=document.getElementById('purchaseItem');
+  const xs=itemMasters.filter(m=>m.type===type);
+  sel.innerHTML=xs.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');
+  syncPurchaseItem();
+}
+function openPurchase(){
+  populatePurchaseTypes();
+  initLocationSelectors();
+  document.getElementById('purchaseOuter').value=1;
+  document.getElementById('purchaseLoose').value=0;
+  document.getElementById('purchaseNoExpiry').checked=false;
+  document.getElementById('purchaseExpiry').value='2026-12-15';
+  document.getElementById('purchaseDate').value='2026-08-09';
+  document.getElementById('purchaseStore').value='';
+  document.getElementById('purchasePaidTotal').value='0';
+  document.getElementById('purchasePromo').value='';
+  syncPurchaseItemsByType();
+  openModal('purchaseModal');
+}
+function syncPurchaseItem(){
+  const m=masterOf(document.getElementById('purchaseItem').value);
+  if(!m)return;
+  const tm=metaOf(m.type);
+  document.getElementById('purchaseItemInfo').innerHTML=
+    `品項：<b>${tm.icon} ${esc(m.type==='醫藥保健'?'醫藥／保健':m.type==='3C耗材'?'3C／耗材':m.type)}｜${esc(m.name)}</b><br>`+
+    (m.outer&&m.per?`包裝規格：1 ${esc(m.outer)} = ${fmt(m.per)} ${esc(m.base)}`:`單位：${esc(m.base)}`);
+  const outerField=document.getElementById('purchaseOuterField');
+  if(m.outer&&m.per){
+    outerField.style.display='block';
+    document.getElementById('purchaseOuterLabel').textContent=`買了幾${m.outer} *`;
+    document.getElementById('purchaseLooseLabel').textContent=`另外買幾${m.base}`;
+  }else{
+    outerField.style.display='none';
+    document.getElementById('purchaseOuter').value=0;
+    document.getElementById('purchaseLooseLabel').textContent=`買了幾${m.base} *`;
+  }
+  updatePurchasePreview();
+}
+function togglePurchaseExpiry(){
+  document.getElementById('purchaseExpiryField').style.display=document.getElementById('purchaseNoExpiry').checked?'none':'block';
+  updatePurchasePreview();
+}
+function updatePurchasePreview(){
+  const m=masterOf(document.getElementById('purchaseItem')?.value)||itemMasters[0];
+  if(!m)return;
+  const outer=Math.max(0,Number(document.getElementById('purchaseOuter').value)||0);
+  const loose=Math.max(0,Number(document.getElementById('purchaseLoose').value)||0);
+  const add=m.outer&&m.per?outer*m.per+loose:loose;
+  const loc=selectedLocation();
+  const expiry=document.getElementById('purchaseNoExpiry').checked?'':document.getElementById('purchaseExpiry').value;
+  document.getElementById('purchaseLocationText').textContent=[loc.loc1,loc.loc2,loc.loc3].filter(Boolean).join(' -- ')||'—';
+
+  const temp={itemId:m.id,...loc,expiry};
+  const found=batches.find(b=>stockKey(b)===stockKey(temp));
+  const actionText=found
+    ?`<br><br>找到相同「品項＋位置＋期限」：<b>會併入既有批次</b>，${qtyText(m,found.total)} → ${qtyText(m,found.total+add)}`
+    :'';
+
+  const paid=Math.max(0,Number(document.getElementById('purchasePaidTotal')?.value)||0);
+  let priceText='';
+  if(add>0){
+    priceText=`<br>本次實付：<b>NT$ ${fmt(paid)}</b>`;
+    if(m.outer&&m.per&&outer>0){
+      priceText+=`・平均約 NT$ ${(paid/outer).toLocaleString('zh-TW',{maximumFractionDigits:2})}/${esc(m.outer)}`;
+    }
+    priceText+=`・平均約 NT$ ${(paid/add).toLocaleString('zh-TW',{maximumFractionDigits:2})}/${esc(m.base)}`;
+  }
+
+  document.getElementById('purchasePreview').innerHTML=
+    `這次新增：<b>${qtyText(m,add)}</b><br>`+
+    `位置：${esc([loc.loc1,loc.loc2,loc.loc3].filter(Boolean).join(' -- '))}<br>`+
+    `期限：${expiry||'無保存期限'}`+
+    priceText+
+    actionText;
+}
+function savePurchase(){
+  const m=masterOf(document.getElementById('purchaseItem').value);
+  const outer=Math.max(0,Number(document.getElementById('purchaseOuter').value)||0);
+  const loose=Math.max(0,Number(document.getElementById('purchaseLoose').value)||0);
+  const add=m.outer&&m.per?outer*m.per+loose:loose;
+  if(add<=0)return alert('採購數量至少要有 1 喔～');
+  const paid=Math.max(0,Number(document.getElementById('purchasePaidTotal').value)||0);
+  if(!Number.isFinite(paid)||paid<0)return alert('請填「本次實付總額」。');
+  const loc=selectedLocation();
+  const expiry=document.getElementById('purchaseNoExpiry').checked?'':document.getElementById('purchaseExpiry').value;
+  if(!document.getElementById('purchaseNoExpiry').checked&&!expiry)return alert('請填保存期限，或勾選「這批沒有保存期限」。');
+
+  const temp={itemId:m.id,...loc,expiry};
+  let found=batches.find(b=>stockKey(b)===stockKey(temp));
+  if(found){
+    found.total+=add;
+    closeModal('purchaseModal');renderInventory();renderStorage();
+    showToast(`🛍️ 已併入既有批次，新增 ${qtyText(m,add)}`);
+  }else{
+    batches.push({id:'b'+Date.now(),itemId:m.id,total:add,...loc,expiry});
+    closeModal('purchaseModal');renderInventory();renderStorage();
+    showToast('🛍️ 採購完成！');
+  }
+}
+
+/* 盤點 */
+function batchChoiceLabel(b,index){
+  const expiry=b.expiry||'無保存期限';
+  return `${expiry}｜${locationText(b)}`;
+}
+function batchesForCountItem(){
+  const itemId=document.getElementById('countItem')?.value;
+  return batches.filter(b=>b.itemId===itemId);
+}
+function openCount(batchId=''){
+  countSpecifiedBatchId=batchId||'';
+
+  const target=batchId?batches.find(b=>b.id===batchId):batches[0];
+  const targetMaster=target?masterOf(target.itemId):null;
+
+  const title=document.getElementById('countModalTitle');
+  const desc=document.getElementById('countModalDesc');
+  const typeSel=document.getElementById('countType');
+  const itemSel=document.getElementById('countItem');
+  const batchSel=document.getElementById('countBatchChoice');
+
+  if(countSpecifiedBatchId){
+    title.textContent='📋 盤點：指定批次';
+    desc.textContent='已從物品資料列指定這一批庫存；盤點只更新數量。';
+  }else{
+    title.textContent='📋 盤點：單一批次';
+    desc.textContent='盤點只更新數量；若要修改存放位置與保存期限請使用「編輯」。';
+  }
+
+  const types=[...new Set(batches.map(b=>masterOf(b.itemId).type))];
+  typeSel.innerHTML=types.map(t=>
+    `<option value="${esc(t)}">${metaOf(t).icon} ${t==='醫藥保健'?'醫藥／保健':t==='3C耗材'?'3C／耗材':t}</option>`
+  ).join('');
+
+  if(targetMaster)typeSel.value=targetMaster.type;
+  syncCountItems(target);
+
+  // 從資料列進來時，整組條件固定，尤其批次不可切換。
+  typeSel.disabled=!!countSpecifiedBatchId;
+  itemSel.disabled=!!countSpecifiedBatchId;
+  batchSel.disabled=!!countSpecifiedBatchId;
+
+  document.getElementById('countDate').value='2026-08-09';
+  openModal('countModal');
+}
+function closeCountModal(){
+  closeModal('countModal');
+  countSpecifiedBatchId='';
+  const ids=['countType','countItem','countBatchChoice'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.disabled=false;
+  });
+}
+
+function syncCountItems(target=null){
+  const type=document.getElementById('countType').value;
+  const itemIds=[...new Set(
+    batches.filter(b=>masterOf(b.itemId).type===type).map(b=>b.itemId)
+  )];
+
+  const sel=document.getElementById('countItem');
+  sel.innerHTML=itemIds.map(id=>`<option value="${id}">${esc(masterOf(id).name)}</option>`).join('');
+
+  if(target&&itemIds.includes(target.itemId))sel.value=target.itemId;
+  syncCountBatchOptions(target);
+}
+function syncCountBatchOptions(target=null){
+  const xs=batchesForCountItem();
+  const sel=document.getElementById('countBatchChoice');
+
+  sel.innerHTML=xs.map((b,index)=>
+    `<option value="${b.id}">${batchChoiceLabel(b,index)}</option>`
+  ).join('');
+
+  if(countSpecifiedBatchId&&xs.some(b=>b.id===countSpecifiedBatchId)){
+    sel.value=countSpecifiedBatchId;
+  }else if(target&&xs.some(b=>b.id===target.id)){
+    sel.value=target.id;
+  }
+
+  syncCountBatch();
+}
+function selectedCountBatch(){
+  const id=document.getElementById('countBatchChoice')?.value;
+  return batches.find(b=>b.id===id);
+}
+function syncCountBatch(){
+  const b=selectedCountBatch();
+  if(!b)return;
+
+  const m=masterOf(b.itemId);
+  const p=qtyParts(m,b.total);
+
+  if(m.outer&&m.per){
+    document.getElementById('countOuterField').style.display='block';
+    document.getElementById('countOuterLabel').textContent=`完整${m.outer}數 *`;
+    document.getElementById('countLooseLabel').textContent=`拆開後剩餘${m.base}數 *`;
+    document.getElementById('countOuter').value=p.outer;
+    document.getElementById('countLoose').value=p.loose;
+  }else{
+    document.getElementById('countOuterField').style.display='none';
+    document.getElementById('countOuter').value=0;
+    document.getElementById('countLooseLabel').textContent=`目前${m.base}數 *`;
+    document.getElementById('countLoose').value=b.total;
+  }
+
+  updateCountPreview();
+}
+function updateCountPreview(){
+  const b=selectedCountBatch();
+  if(!b)return;
+
+  const m=masterOf(b.itemId);
+  const tm=metaOf(m.type);
+  const outer=Math.max(0,Number(document.getElementById('countOuter').value)||0);
+  const loose=Math.max(0,Number(document.getElementById('countLoose').value)||0);
+  const total=m.outer&&m.per?outer*m.per+loose:loose;
+  const typeText=m.type==='醫藥保健'?'醫藥／保健':m.type==='3C耗材'?'3C／耗材':m.type;
+
+  document.getElementById('countPreview').innerHTML=
+    `<div class="summary-title">品項：${tm.icon} ${esc(typeText)}｜${esc(m.name)}</div>`+
+    `<div class="summary-row">位置：<b>${esc(locationText(b))}</b></div>`+
+    `<div class="summary-row expiry-row">保存期限：<b>${esc(b.expiry||'無保存期限')}</b></div>`+
+    `<div class="summary-row">目前：<b>${qtyText(m,b.total)}</b></div>`+
+    `<div class="summary-result">調整後：<b>${qtyText(m,total)}</b></div>`;
+}
+function saveCount(){
+  const b=selectedCountBatch();
+  if(!b)return alert('找不到要盤點的庫存批次。');
+
+  const m=masterOf(b.itemId);
+  const outer=Math.max(0,Number(document.getElementById('countOuter').value)||0);
+  const loose=Math.max(0,Number(document.getElementById('countLoose').value)||0);
+
+  if(m.outer&&m.per&&loose>=m.per){
+    return alert(`拆開後剩餘${m.base}數應小於每${m.outer} ${m.per} ${m.base}。`);
+  }
+
+  const oldTotal=b.total;
+  b.total=m.outer&&m.per?outer*m.per+loose:loose;
+
+  if(oldTotal!==b.total){
+    const now=new Date();
+    const pad=n=>String(n).padStart(2,'0');
+    const dt=`${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    historyEvents.unshift({
+      id:'h'+Date.now(),
+      datetime:dt,
+      kind:'盤點',
+      type:m.type,
+      name:m.name,
+      detail:`${qtyText(m,oldTotal)} → ${qtyText(m,b.total)}・${locationText(b)}・保存期限 ${b.expiry||'無保存期限'}`
+    });
+  }
+
+  closeCountModal();
+  renderInventory();
+  renderStorage();
+  renderHistoryFilterChips();
+  renderHistory();
+  showToast(`📋 已調整為 ${qtyText(m,b.total)}`);
+}
+
+/* 編輯庫存批次：只維護位置與期限 */
+function editTargetBatch(){
+  const id=document.getElementById('editBatchId')?.value;
+  return batches.find(b=>b.id===id);
+}
+function openEdit(batchId){
+  const b=batches.find(x=>x.id===batchId);
+  if(!b)return;
+
+  const m=masterOf(b.itemId);
+  const tm=metaOf(m.type);
+  const typeText=m.type==='醫藥保健'?'醫藥／保健':m.type==='3C耗材'?'3C／耗材':m.type;
+
+  document.getElementById('editBatchId').value=b.id;
+  document.getElementById('editBatchItemInfo').innerHTML=
+    `品項：<b>${tm.icon} ${esc(typeText)}｜${esc(m.name)}</b><br>`+
+    `目前數量：<b>${qtyText(m,b.total)}</b>`;
+
+  const l1=document.getElementById('editLoc1');
+  l1.innerHTML=Object.keys(LOCATION_TREE).map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+  l1.value=b.loc1;
+  syncEditLoc2(b.loc2,b.loc3);
+
+  document.getElementById('editNoExpiry').checked=!b.expiry;
+  document.getElementById('editExpiry').value=b.expiry||'';
+  toggleEditExpiry(false);
+  updateEditPreview();
+
+  openModal('editBatchModal');
+}
+function syncEditLoc2(preselectL2='',preselectL3=''){
+  const l1=document.getElementById('editLoc1').value;
+  const l2=document.getElementById('editLoc2');
+  const keys=Object.keys(LOCATION_TREE[l1]||{});
+
+  l2.innerHTML=keys.map(x=>
+    `<option value="${esc(x)}">${x?esc(x):'— 無第二層 —'}</option>`
+  ).join('');
+
+  if(keys.includes(preselectL2))l2.value=preselectL2;
+  syncEditLoc3(preselectL3);
+}
+function syncEditLoc3(preselect=''){
+  const l1=document.getElementById('editLoc1').value;
+  const l2=document.getElementById('editLoc2').value;
+  const l3=document.getElementById('editLoc3');
+  const xs=(LOCATION_TREE[l1]&&LOCATION_TREE[l1][l2])||[''];
+
+  l3.innerHTML=xs.map(x=>
+    `<option value="${esc(x)}">${x?esc(x):'— 無第三層 —'}</option>`
+  ).join('');
+
+  if(xs.includes(preselect))l3.value=preselect;
+  updateEditPreview();
+}
+function selectedEditLocation(){
+  return {
+    loc1:document.getElementById('editLoc1').value,
+    loc2:document.getElementById('editLoc2').value,
+    loc3:document.getElementById('editLoc3').value
+  };
+}
+function toggleEditExpiry(update=true){
+  const noExpiry=document.getElementById('editNoExpiry').checked;
+  document.getElementById('editExpiryField').style.display=noExpiry?'none':'block';
+  if(update)updateEditPreview();
+}
+function updateEditPreview(){
+  const b=editTargetBatch();
+  if(!b)return;
+
+  const loc=selectedEditLocation();
+  const location=[loc.loc1,loc.loc2,loc.loc3].filter(Boolean).join(' -- ');
+  const expiry=document.getElementById('editNoExpiry').checked
+    ?''
+    :document.getElementById('editExpiry').value;
+
+  document.getElementById('editBatchPreview').innerHTML=
+    `調整後位置：<b>${esc(location||'—')}</b><br>`+
+    `保存期限：<span class="expiry-display">${esc(expiry||'無保存期限')}</span>`;
+}
+function saveEditBatch(){
+  const b=editTargetBatch();
+  if(!b)return;
+
+  const m=masterOf(b.itemId);
+  const oldLocation=locationText(b);
+  const oldExpiry=b.expiry||'';
+
+  const loc=selectedEditLocation();
+  const expiry=document.getElementById('editNoExpiry').checked
+    ?''
+    :document.getElementById('editExpiry').value;
+
+  if(!document.getElementById('editNoExpiry').checked&&!expiry){
+    return alert('請填保存期限，或勾選「這批沒有保存期限」。');
+  }
+
+  const newKey=[b.itemId,loc.loc1||'',loc.loc2||'',loc.loc3||'',expiry||''].join('§');
+  const duplicate=batches.find(x=>
+    x.id!==b.id &&
+    [x.itemId,x.loc1||'',x.loc2||'',x.loc3||'',x.expiry||''].join('§')===newKey
+  );
+
+  if(duplicate){
+    const ok=confirm(
+      `這個位置與保存期限已經有相同品項的庫存。\\n\\n`+
+      `要把目前這批合併進既有批次嗎？`
+    );
+    if(!ok)return;
+
+    duplicate.total+=b.total;
+    batches=batches.filter(x=>x.id!==b.id);
+  }else{
+    b.loc1=loc.loc1;
+    b.loc2=loc.loc2;
+    b.loc3=loc.loc3;
+    b.expiry=expiry;
+  }
+
+  const newLocation=[loc.loc1,loc.loc2,loc.loc3].filter(Boolean).join(' -- ');
+  if(oldLocation!==newLocation || oldExpiry!==expiry){
+    const now=new Date();
+    const pad=n=>String(n).padStart(2,'0');
+    const dt=`${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+    const changes=[];
+    if(oldLocation!==newLocation){
+      changes.push(`位置 ${oldLocation} → ${newLocation}`);
+    }
+    if(oldExpiry!==expiry){
+      changes.push(`保存期限 ${oldExpiry||'無保存期限'} → ${expiry||'無保存期限'}`);
+    }
+
+    historyEvents.unshift({
+      id:'h'+Date.now(),
+      datetime:dt,
+      kind:'移動',
+      type:m.type,
+      name:m.name,
+      detail:changes.join('・')
+    });
+  }
+
+  closeModal('editBatchModal');
+  renderInventory();
+  renderStorage();
+  renderHistoryFilterChips();
+  renderHistory();
+  showToast(duplicate?'✨ 已合併到既有批次！':'✨ 編輯完成！');
+}
+
+
+renderTypeChips();
+renderInventory();
+renderStorage();
+renderHistoryFilterChips();
+renderHistory();
+</script>
+</body>
+</html>
