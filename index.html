@@ -3653,7 +3653,12 @@ function syncPurchaseItemsByType(){
   sel.innerHTML=xs.map(m=>`<option value="${m.id}">${esc(itemOptionLabel(m))}</option>`).join('');
   syncPurchaseItem();
 }
-function openPurchase(){
+function openPurchase(preselectItemId=''){
+  if(!itemMasters.length){
+    alert('請先新增至少一個品項。');
+    return;
+  }
+
   populatePurchaseTypes();
   initLocationSelectors();
   document.getElementById('purchaseOuter').value=1;
@@ -3664,7 +3669,17 @@ function openPurchase(){
   document.getElementById('purchaseStore').value='';
   document.getElementById('purchasePaidTotal').value='0';
   document.getElementById('purchasePromo').value='';
-  syncPurchaseItemsByType();
+
+  const preselect=preselectItemId?masterOf(preselectItemId):null;
+  if(preselect){
+    document.getElementById('purchaseType').value=preselect.type;
+    syncPurchaseItemsByType();
+    document.getElementById('purchaseItem').value=preselect.id;
+    syncPurchaseItem();
+  }else{
+    syncPurchaseItemsByType();
+  }
+
   openModal('purchaseModal');
 }
 function syncPurchaseItem(){
@@ -3769,6 +3784,11 @@ function batchesForCountItem(){
   return batches.filter(b=>b.itemId===itemId);
 }
 function openCount(batchId=''){
+  if(!batches.length){
+    alert('目前沒有可盤點的庫存。');
+    return;
+  }
+
   countSpecifiedBatchId=batchId||'';
 
   const target=batchId?batches.find(b=>b.id===batchId):batches[0];
