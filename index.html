@@ -170,14 +170,25 @@ button:active{transform:scale(.98)}
   gap:5px 10px;align-items:stretch;margin:8px 0 12px
 }
 .history-search-row .search{grid-column:1;grid-row:2;margin:0;height:46px}
-.history-date-field{min-width:150px;display:grid;grid-template-rows:auto 46px;grid-row:1/3}
+.history-date-field{min-width:198px;display:grid;grid-template-rows:auto 46px;grid-row:1/3}
 .history-date-field label{
   display:block;font-size:12px;font-weight:750;color:var(--muted);margin:0 0 5px 2px;align-self:end
 }
+.history-date-input-row{
+  display:grid;grid-template-columns:minmax(140px,1fr) 42px;gap:6px;height:46px
+}
 .history-date-field input{
-  width:100%;height:46px;border:1px solid var(--line);border-radius:15px;padding:10px 11px;background:#fffdf9;color:var(--ink);outline:none
+  width:100%;min-width:0;height:46px;border:1px solid var(--line);border-radius:15px;padding:10px 11px;background:#fffdf9;color:var(--ink);outline:none
 }
 .history-date-field input:focus{border-color:#d9b188;box-shadow:0 0 0 3px rgba(208,157,109,.16)}
+.history-today-btn{
+  width:42px;height:46px;padding:0;border-radius:13px;
+  background:#fff8f1;border-color:#e4d1c0;color:#8c6344;font-weight:800;
+  display:flex;align-items:center;justify-content:center;box-shadow:none;margin:0
+}
+.history-today-btn:hover{
+  background:#fff0e4;border-color:#d9b99d;color:#72482d;transform:translateY(-1px)
+}
 .history-reset-field{min-width:42px;display:grid;grid-template-rows:auto 46px;grid-column:4;grid-row:1/3}
 .history-reset-field .history-reset-label{
   display:block;font-size:12px;font-weight:750;margin:0 0 5px 2px;visibility:hidden;align-self:end
@@ -557,12 +568,13 @@ button:active{transform:scale(.98)}
   .iconbtn{padding:9px 10px}
   .storage-head-actions{width:100%;justify-content:stretch}
   .storage-head-actions .btn{flex:1}
-  .history-search-row{grid-template-columns:1fr 1fr 42px;grid-template-rows:46px auto 46px;gap:8px}
+  .history-search-row{grid-template-columns:1fr 42px;grid-template-rows:46px auto auto;gap:8px}
   .history-search-row .search{grid-column:1/-1;grid-row:1;height:46px}
-  .history-date-field{min-width:0;grid-row:2/4}
-  .history-date-field:first-of-type{grid-column:1}
-  .history-date-field:nth-of-type(2){grid-column:2}
-  .history-reset-field{grid-column:3;grid-row:2/4;min-width:42px}
+  .history-date-field{min-width:0;grid-row:auto}
+  .history-date-field:first-of-type{grid-column:1/-1;grid-row:2}
+  .history-date-field:nth-of-type(2){grid-column:1;grid-row:3}
+  .history-date-input-row{grid-template-columns:minmax(0,1fr) 42px}
+  .history-reset-field{grid-column:2;grid-row:3;min-width:42px}
   .history-reset-btn{width:42px;height:46px;justify-self:end}
   .inventory-head{display:none}
   .item{
@@ -1425,7 +1437,7 @@ details.storage-l2[open] > .storage-l2-content{
       </div>
 <div class="search-clear-wrap">
         <input id="searchBox" class="search" placeholder="搜尋品項、品牌、類型、保存期限、位置…" oninput="renderInventory()" />
-        <button class="search-clear-btn" type="button" title="清除搜尋" aria-label="清除搜尋" onclick="clearInventorySearch()">×</button>
+        <button class="search-clear-btn" type="button" title="清除所有篩選條件" aria-label="清除所有篩選條件" onclick="clearInventorySearch()">×</button>
       </div>
       <div class="chips" id="typeChips"></div>
       <div id="inventoryList" class="inventory"></div>
@@ -1456,7 +1468,7 @@ details.storage-l2[open] > .storage-l2-content{
   <main id="history" class="view">
     <div class="section">
       <div class="section-head">
-        <div><h3>📖 小日倉日記</h3><div class="sub">採購、盤點、移動與新增都幫你留著</div></div>
+        <div><h3>📖 小日倉日記</h3><div class="sub">採購、盤點、修改與新增都幫你留著</div></div>
         <button class="btn excel-export-btn" type="button" onclick="exportHistoryExcel()">📗 匯出 Excel</button>
       </div>
 
@@ -1464,15 +1476,21 @@ details.storage-l2[open] > .storage-l2-content{
         <input id="historySearchBox" class="search" placeholder="搜尋品項、品牌、類型、位置、通路、優惠備註、內容…" oninput="renderHistory()" />
         <div class="history-date-field">
           <label for="historyDateFrom">起日</label>
-          <input id="historyDateFrom" type="date" onchange="syncHistoryDateBounds('from')">
+          <div class="history-date-input-row">
+            <input id="historyDateFrom" type="date" onchange="syncHistoryDateBounds('from')">
+            <button class="btn history-today-btn" type="button" title="起日帶入今天" aria-label="起日帶入今天" onclick="setHistoryDateToday('from')">今</button>
+          </div>
         </div>
         <div class="history-date-field">
           <label for="historyDateTo">迄日</label>
-          <input id="historyDateTo" type="date" onchange="syncHistoryDateBounds('to')">
+          <div class="history-date-input-row">
+            <input id="historyDateTo" type="date" onchange="syncHistoryDateBounds('to')">
+            <button class="btn history-today-btn" type="button" title="迄日帶入今天" aria-label="迄日帶入今天" onclick="setHistoryDateToday('to')">今</button>
+          </div>
         </div>
         <div class="history-reset-field">
           <span class="history-reset-label" aria-hidden="true">清除</span>
-          <button class="btn history-reset-btn" type="button" title="清除搜尋條件" aria-label="清除搜尋條件" onclick="resetHistoryFilters()">×</button>
+          <button class="btn history-reset-btn" type="button" title="清除所有篩選條件" aria-label="清除所有篩選條件" onclick="resetHistoryFilters()">×</button>
         </div>
       </div>
 
@@ -2470,6 +2488,7 @@ function normalizeTypeData(){
     m.brand=String(m.brand||'').trim();
   });
   historyEvents.forEach(e=>{
+    if(e.kind==='移動')e.kind='修改';
     if(alias[e.type])e.type=alias[e.type];
     e.brand=String(e.brand||'').trim();
     if(!e.brand){
@@ -2693,7 +2712,6 @@ function deleteInventoryBatch(batchId){
   renderHistoryFilterChips();
   renderHistory();
   showToast('🗑️ 庫存已刪除');
-  showView('history');
 }
 
 function setTypeFilter(type){
@@ -2715,6 +2733,8 @@ function renderTypeChips(){
 function clearInventorySearch(){
   const input=document.getElementById('searchBox');
   if(input)input.value='';
+  filterType='全部';
+  renderTypeChips();
   renderInventory();
 }
 function renderInventory(){
@@ -3025,7 +3045,7 @@ function historyClass(kind){
   return kind==='新增'?'add':kind==='採購'?'purchase':kind==='盤點'?'count':kind==='刪除'?'delete':'move';
 }
 function renderHistoryFilterChips(){
-  const labels=['全部','新增','採購','盤點','移動','刪除'];
+  const labels=['全部','新增','採購','盤點','修改','刪除'];
   const host=document.getElementById('historyFilterChips');
   if(!host)return;
   host.innerHTML=labels.map(label=>{
@@ -3063,15 +3083,46 @@ function syncHistoryDateBounds(changed=''){
   to.min=from.value||'';
   renderHistory();
 }
+function setHistoryDateToday(which){
+  const id=which==='to'?'historyDateTo':'historyDateFrom';
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.value=backupDate();
+  syncHistoryDateBounds(which==='to'?'to':'from');
+}
+function showHistoryToday(){
+  const from=document.getElementById('historyDateFrom');
+  if(from)from.value=backupDate();
+  syncHistoryDateBounds('from');
+  showView('history');
+}
+function historyDateBoundary(value,isEnd=false){
+  if(!value)return null;
+  const parts=value.split('-').map(Number);
+  if(parts.length!==3||parts.some(x=>!Number.isFinite(x)))return null;
+  const [y,m,d]=parts;
+  return new Date(y,m-1,d,isEnd?23:0,isEnd?59:0,isEnd?59:0,isEnd?999:0).getTime();
+}
+function historyEventTimestamp(e){
+  const raw=String(e.datetime||'').trim();
+  const match=raw.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+  if(!match)return NaN;
+  const y=Number(match[1]),m=Number(match[2]),d=Number(match[3]);
+  const hh=Number(match[4]||0),mm=Number(match[5]||0),ss=Number(match[6]||0);
+  return new Date(y,m-1,d,hh,mm,ss,0).getTime();
+}
 function renderHistory(){
   const q=(document.getElementById('historySearchBox')?.value||'').trim().toLocaleLowerCase('zh-TW');
   const dateFrom=document.getElementById('historyDateFrom')?.value||'';
   const dateTo=document.getElementById('historyDateTo')?.value||'';
+  const fromTime=historyDateBoundary(dateFrom,false);
+  const toTime=historyDateBoundary(dateTo,true);
   const xs=historyEvents.filter(e=>{
     const filterOk=historyFilter==='全部'||e.kind===historyFilter;
     const hay=[e.datetime,e.kind,e.type,e.brand||'',e.name,e.detail].join(' ').toLocaleLowerCase('zh-TW');
-    const eventDate=String(e.datetime||'').slice(0,10).replaceAll('/','-');
-    const dateOk=(!dateFrom||eventDate>=dateFrom) && (!dateTo||eventDate<=dateTo);
+    const eventTime=historyEventTimestamp(e);
+    const dateOk=(fromTime===null||Number.isFinite(eventTime)&&eventTime>=fromTime) &&
+                 (toTime===null||Number.isFinite(eventTime)&&eventTime<=toTime);
     return filterOk && dateOk && (!q||hay.includes(q));
   });
 
@@ -3116,18 +3167,30 @@ function showToast(message){
   clearTimeout(toastTimer);el.textContent=message;el.classList.add('show');
   toastTimer=setTimeout(()=>el.classList.remove('show'),1900);
 }
-function normalizeEmptyNumberInput(input){
+function normalizeNumberInput(input){
   if(!input || input.type!=='number')return;
-  if(String(input.value??'').trim()!=='')return;
-  input.value='0';
-  input.dispatchEvent(new Event('input',{bubbles:true}));
-  input.dispatchEvent(new Event('change',{bubbles:true}));
+
+  const raw=String(input.value??'').trim();
+
+  // 數量欄位不可留空；清空時自動回到 0。
+  if(raw===''){
+    input.value='0';
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    input.dispatchEvent(new Event('change',{bubbles:true}));
+    return;
+  }
+
+  // 移除整數前面多餘的 0，例如 01 → 1、002 → 2、000 → 0。
+  // 小日倉目前的 number 欄位皆為非負整數用途。
+  if(/^0\d+$/.test(raw)){
+    input.value=String(Number(raw));
+  }
 }
 document.addEventListener('input',event=>{
-  if(event.target?.matches?.('input[type="number"]'))normalizeEmptyNumberInput(event.target);
+  if(event.target?.matches?.('input[type="number"]'))normalizeNumberInput(event.target);
 },true);
 document.addEventListener('blur',event=>{
-  if(event.target?.matches?.('input[type="number"]'))normalizeEmptyNumberInput(event.target);
+  if(event.target?.matches?.('input[type="number"]'))normalizeNumberInput(event.target);
 },true);
 
 /* 類型維護 */
@@ -3764,13 +3827,13 @@ function savePurchase(){
     saveLocal();
     closeModal('purchaseModal');renderInventory();renderStorage();
     showToast(`🛍️ 已併入既有批次，新增 ${qtyText(m,add)}`);
-    showView('history');
+    showHistoryToday();
   }else{
     batches.push({id:'b'+Date.now(),itemId:m.id,total:add,...loc,expiry});
     saveLocal();
     closeModal('purchaseModal');renderInventory();renderStorage();
     showToast('🛍️ 採購完成！');
-    showView('history');
+    showHistoryToday();
   }
 }
 
@@ -3943,7 +4006,7 @@ function saveCount(){
   renderHistoryFilterChips();
   renderHistory();
   showToast(`📋 已調整為 ${qtyText(m,b.total)}`);
-  showView('history');
+  showHistoryToday();
 }
 
 /* 編輯庫存批次：只維護位置與期限 */
@@ -4093,7 +4156,7 @@ function saveEditBatch(){
     historyEvents.unshift({
       id:'h'+Date.now(),
       datetime:dt,
-      kind:'移動',
+      kind:'修改',
       type:m.type,
       brand:m.brand||'',
       name:m.name,
@@ -4127,6 +4190,7 @@ document.addEventListener('visibilitychange',()=>{
 const historyFromInit=document.getElementById('historyDateFrom');
 const historyToInit=document.getElementById('historyDateTo');
 if(historyFromInit&&historyToInit){
+  if(!historyFromInit.value)historyFromInit.value=backupDate();
   historyFromInit.max=historyToInit.value||'';
   historyToInit.min=historyFromInit.value||'';
 }
