@@ -1488,7 +1488,7 @@ details.storage-l2[open] > .storage-l2-content{
 }
 
 
-/* ===== v1.1：視窗操作列一致性 ===== */
+/* ===== v1.4：視窗操作列一致性 ===== */
 .modal-actions,
 .modal-actions.transaction-modal-actions{
   flex-direction:row-reverse; /* 主要操作在左、取消在右 */
@@ -1509,35 +1509,6 @@ details.storage-l2[open] > .storage-l2-content{
   color:var(--ink);
   margin:4px 0 4px;
 }
-#appAlertModal,#appPromptModal{
-  align-items:center !important;
-  padding:16px !important;
-}
-/* 系統訊息框永遠浮在所有功能視窗之上 */
-#appConfirmModal,#appAlertModal,#appPromptModal{
-  z-index:1000 !important;
-}
-#appConfirmModal.show,#appAlertModal.show,#appPromptModal.show{
-  display:flex !important;
-}
-#appAlertModal .app-dialog-modal,#appPromptModal .app-dialog-modal{
-  width:min(460px,calc(100% - 8px));
-  max-height:min(72dvh,560px) !important;
-}
-.app-dialog-message{
-  white-space:pre-line;
-  line-height:1.65;
-  color:var(--ink);
-  margin:4px 0 10px;
-}
-.app-single-action{
-  flex-direction:row !important;
-}
-.app-single-action .btn{
-  max-width:220px;
-  margin-left:auto;
-  margin-right:auto;
-}
 @media(max-width:760px){
   .modal-actions,
   .modal-actions.transaction-modal-actions{
@@ -1547,14 +1518,6 @@ details.storage-l2[open] > .storage-l2-content{
     padding:18px !important;
   }
   #appConfirmModal .app-confirm-modal{
-    width:100%;
-    max-height:70dvh !important;
-    border-radius:22px;
-  }
-  #appAlertModal,#appPromptModal{
-    padding:18px !important;
-  }
-  #appAlertModal .app-dialog-modal,#appPromptModal .app-dialog-modal{
     width:100%;
     max-height:70dvh !important;
     border-radius:22px;
@@ -1672,6 +1635,29 @@ details.storage-l2[open] > .storage-l2-content{
     border-radius:25px 25px 20px 20px !important;
   }
 }
+
+
+/* ===== v1.2：系統提示永遠顯示在最上層 ===== */
+#appConfirmModal,#appAlertModal,#appPromptModal{z-index:1000 !important;align-items:center !important;padding:16px !important;overflow:hidden !important}
+#appConfirmModal .app-confirm-modal,#appAlertModal .app-system-modal,#appPromptModal .app-system-modal{
+  width:min(460px,calc(100% - 8px));max-height:min(72dvh,560px) !important;border-radius:22px !important;
+}
+.app-system-message{white-space:pre-line;line-height:1.65;color:var(--ink);margin:4px 0}
+#moveLocationModal{z-index:80}
+.location-maint-actions .loc-move{color:#4f6f98;border-color:#c9d7e8;background:#f5f9ff}
+.location-maint-actions .loc-move:hover{background:#edf4ff;border-color:#b6cae2}
+
+/* 主要操作固定在左、取消／次要操作固定在右 */
+.modal-actions .btn.primary{order:1}
+.modal-actions .btn:not(.primary){order:2}
+
+@media(max-width:760px){
+  #appConfirmModal,#appAlertModal,#appPromptModal{padding:18px !important}
+  #appConfirmModal .app-confirm-modal,#appAlertModal .app-system-modal,#appPromptModal .app-system-modal{
+    width:100%;max-height:70dvh !important;border-radius:22px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1724,7 +1710,7 @@ details.storage-l2[open] > .storage-l2-content{
 
     <div class="location-tree-box">
       <h4>編輯或刪除 目前的位置</h4>
-      <div class="location-box-desc">點選鉛筆可以改名；刪除功能只允許目前沒有庫存使用的位置。</div>
+      <div class="location-box-desc">點選鉛筆可以改名；↪ 可以把第 2～4 層位置移到其他上一層位置；刪除功能只允許目前沒有庫存使用的位置。</div>
       <div id="locationMaintList" class="location-maint-list"></div>
     </div>
   </div>
@@ -1745,38 +1731,46 @@ details.storage-l2[open] > .storage-l2-content{
     <p id="appConfirmMessage"></p>
   </div>
   <div class="modal-actions transaction-modal-actions">
-    <button id="appConfirmCancel" class="btn grow" type="button" onclick="resolveAppConfirm(false)">取消</button>
     <button id="appConfirmOk" class="btn primary grow" type="button" onclick="resolveAppConfirm(true)">確定</button>
+    <button id="appConfirmCancel" class="btn grow" type="button" onclick="resolveAppConfirm(false)">取消</button>
   </div>
 </div></div>
 
-<!-- 小日倉自訂提示框：取代瀏覽器原生 appAlert() -->
-<div class="modalback" id="appAlertModal"><div class="modal transaction-modal app-dialog-modal" role="alertdialog" aria-modal="true" aria-labelledby="appAlertTitle">
-  <div class="transaction-modal-head">
-    <h3 id="appAlertTitle">💡 小日倉提示</h3>
-  </div>
-  <div class="transaction-modal-body">
-    <p id="appAlertMessage" class="app-dialog-message"></p>
-  </div>
-  <div class="modal-actions transaction-modal-actions app-single-action">
+<!-- 小日倉自訂提示框 -->
+<div class="modalback system-modal" id="appAlertModal"><div class="modal transaction-modal app-system-modal" role="alertdialog" aria-modal="true" aria-labelledby="appAlertTitle">
+  <div class="transaction-modal-head"><h3 id="appAlertTitle">💡 小日倉提示</h3></div>
+  <div class="transaction-modal-body"><p id="appAlertMessage" class="app-system-message"></p></div>
+  <div class="modal-actions transaction-modal-actions">
     <button id="appAlertOk" class="btn primary grow" type="button" onclick="resolveAppAlert()">確定</button>
   </div>
 </div></div>
 
-<!-- 小日倉自訂輸入框：取代瀏覽器原生 prompt() -->
-<div class="modalback" id="appPromptModal"><div class="modal transaction-modal app-dialog-modal" role="dialog" aria-modal="true" aria-labelledby="appPromptTitle">
-  <div class="transaction-modal-head">
-    <h3 id="appPromptTitle">✏️ 輸入資料</h3>
-  </div>
+<!-- 小日倉自訂輸入框 -->
+<div class="modalback system-modal" id="appPromptModal" onclick="if(event.target===this)resolveAppPrompt(null)"><div class="modal transaction-modal app-system-modal" role="dialog" aria-modal="true" aria-labelledby="appPromptTitle">
+  <div class="transaction-modal-head"><h3 id="appPromptTitle">✏️ 輸入資料</h3></div>
   <div class="transaction-modal-body">
-    <p id="appPromptMessage" class="app-dialog-message"></p>
-    <div class="field" style="margin-bottom:2px">
-      <input id="appPromptInput" type="text" autocomplete="off">
-    </div>
+    <p id="appPromptMessage" class="app-system-message"></p>
+    <div class="field"><input id="appPromptInput" type="text"></div>
   </div>
   <div class="modal-actions transaction-modal-actions">
-    <button id="appPromptCancel" class="btn grow" type="button" onclick="resolveAppPrompt(null)">取消</button>
     <button id="appPromptOk" class="btn primary grow" type="button" onclick="resolveAppPrompt(document.getElementById('appPromptInput').value)">儲存</button>
+    <button id="appPromptCancel" class="btn grow" type="button" onclick="resolveAppPrompt(null)">取消</button>
+  </div>
+</div></div>
+
+<!-- 修改／移動位置 -->
+<div class="modalback" id="moveLocationModal"><div class="modal transaction-modal">
+  <div class="transaction-modal-head"><h3>🔀 修改位置</h3></div>
+  <div class="transaction-modal-body">
+    <p>位置會維持原本的層級，只修改它隸屬的上一層位置；底下的子位置與庫存批次會一起移動。</p>
+    <div id="moveLocationCurrent" class="readonly-info"></div>
+    <div class="field" id="moveDest1Field"><label>移到第 1 層 *</label><select id="moveDest1" onchange="syncMoveDestination2()"></select></div>
+    <div class="field" id="moveDest2Field"><label>移到第 2 層 *</label><select id="moveDest2" onchange="syncMoveDestination3()"></select></div>
+    <div class="field" id="moveDest3Field"><label>移到第 3 層 *</label><select id="moveDest3"></select></div>
+  </div>
+  <div class="modal-actions transaction-modal-actions">
+    <button class="btn primary grow" type="button" onclick="saveMoveLocation()">移動</button>
+    <button class="btn grow" type="button" onclick="closeModal('moveLocationModal')">取消</button>
   </div>
 </div></div>
 
@@ -1954,10 +1948,14 @@ details.storage-l2[open] > .storage-l2-content{
   <div class="transaction-modal-body">
   <p>選品項後，填這次買回來的數量、保存期限與存放位置。小日倉會自動判斷要併入既有批次，還是建立新批次。</p>
 
-  <div class="grid-type-item">
+  <div class="grid3">
     <div class="field">
       <label>類型 *</label>
       <select id="purchaseType" onchange="syncPurchaseItemsByType()"></select>
+    </div>
+    <div class="field">
+      <label>品牌 *</label>
+      <select id="purchaseBrand" onchange="syncPurchaseItemsByBrand()"></select>
     </div>
     <div class="field">
       <label>品項 *</label>
@@ -2038,10 +2036,14 @@ details.storage-l2[open] > .storage-l2-content{
   <div class="transaction-modal-body">
   <p id="countModalDesc">盤點只更新數量；若要修改保存期限與存放位置請使用「編輯」。</p>
 
-  <div class="grid-type-item">
+  <div class="grid3">
     <div class="field">
       <label>類型 *</label>
-      <select id="countType" onchange="syncCountItems()"></select>
+      <select id="countType" onchange="syncCountBrands()"></select>
+    </div>
+    <div class="field">
+      <label>品牌 *</label>
+      <select id="countBrand" onchange="syncCountItems()"></select>
     </div>
     <div class="field">
       <label>品項 *</label>
@@ -2289,7 +2291,7 @@ details.storage-l2[open] > .storage-l2-content{
     <div class="settings-storage-note">登入後會同步到雲端，瀏覽器本機仍保留快取；JSON 備份功能也會繼續保留。</div>
   </div>
 
-  <div class="settings-version">小日倉 v1.1</div>
+  <div class="settings-version">小日倉 v1.3</div>
     </div>
 
   <div class="modal-actions transaction-modal-actions"><button class="btn primary grow" onclick="closeModal('settingsModal')">關閉</button></div>
@@ -2298,6 +2300,8 @@ details.storage-l2[open] > .storage-l2-content{
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+
+
 const TYPE_TONES=['type-food','type-drink','type-daily','type-clean','type-beauty','type-health','type-tech','type-other'];
 const TYPE_EMOJIS_RAW=["😀","😃","😄","😁","😆","😅","🤣","😂","🙂","🙃","🫠","😉","😊","😇","🥰","😍","🤩","😘","😗","☺️","😚","😙","🥲","😋","😛","😜","🤪","😝","🤑","🤗","🤭","🫢","🫣","🤫","🤔","🫡","🤐","🤨","😐","😑","😶","🫥","😶‍🌫️","😏","😒","🙄","😬","😮‍💨","🤥","🫨","🙂‍↔️","🙂‍↕️","😌","😔","😪","🤤","😴","🫩","😷","🤒","🤕","🤢","🤮","🤧","🥵","🥶","🥴","😵","😵‍💫","🤯","🤠","🥳","🥸","😎","🤓","🧐","😕","🫤","😟","🙁","☹️","😮","😯","😲","😳","🫪","🥺","🥹","😦","😧","😨","😰","😥","😢","😭","😱","😖","😣","😞","😓","😩","😫","🥱","😤","😡","😠","🤬","😈","👿","💀","☠️","💩","🤡","👹","👺","👻","👽","👾","🤖","😺","😸","😹","😻","😼","😽","🙀","😿","😾","🙈","🙉","🙊","💌","💘","💝","💖","💗","💓","💞","💕","💟","❣️","💔","❤️‍🔥","❤️‍🩹","❤️","🩷","🧡","💛","💚","💙","🩵","💜","🤎","🖤","🩶","🤍","💋","💯","💢","🫯","💥","💫","💦","💨","🕳️","💬","👁️‍🗨️","🗨️","🗯️","💭","💤","🐵","🐒","🦍","🦧","🐶","🐕","🦮","🐕‍🦺","🐩","🐺","🦊","🦝","🐱","🐈","🐈‍⬛","🦁","🐯","🐅","🐆","🐴","🫎","🫏","🐎","🦄","🦓","🦌","🦬","🐮","🐂","🐃","🐄","🐷","🐖","🐗","🐽","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦣","🦏","🦛","🐭","🐁","🐀","🐹","🐰","🐇","🐿️","🦫","🦔","🦇","🐻","🐻‍❄️","🐨","🐼","🦥","🦦","🦨","🦘","🦡","🐾","🦃","🐔","🐓","🐣","🐤","🐥","🐦","🐧","🕊️","🦅","🦆","🦢","🦉","🦤","🪶","🦩","🦚","🦜","🪽","🐦‍⬛","🪿","🐦‍🔥","🐸","🐊","🐢","🦎","🐍","🐲","🐉","🦕","🦖","🐳","🐋","🐬","🫍","🦭","🐟","🐠","🐡","🦈","🐙","🐚","🪸","🪼","🦀","🦞","🦐","🦑","🦪","🐌","🦋","🐛","🐜","🐝","🪲","🐞","🦗","🪳","🕷️","🕸️","🦂","🦟","🪰","🪱","🦠","💐","🌸","💮","🪷","🏵️","🌹","🥀","🌺","🌻","🌼","🌷","🪻","🌱","🪴","🌲","🌳","🌴","🌵","🌾","🌿","☘️","🍀","🍁","🍂","🍃","🪹","🪺","🍄","🪾","🍇","🍈","🍉","🍊","🍋","🍋‍🟩","🍌","🍍","🥭","🍎","🍏","🍐","🍑","🍒","🍓","🫐","🥝","🍅","🫒","🥥","🥑","🍆","🥔","🥕","🌽","🌶️","🫑","🥒","🥬","🥦","🧄","🧅","🥜","🫘","🌰","🫚","🫛","🍄‍🟫","🫜","🍞","🥐","🥖","🫓","🥨","🥯","🥞","🧇","🧀","🍖","🍗","🥩","🥓","🍔","🍟","🍕","🌭","🥪","🌮","🌯","🫔","🥙","🧆","🥚","🍳","🥘","🍲","🫕","🥣","🥗","🍿","🧈","🧂","🥫","🍱","🍘","🍙","🍚","🍛","🍜","🍝","🍠","🍢","🍣","🍤","🍥","🥮","🍡","🥟","🥠","🥡","🍦","🍧","🍨","🍩","🍪","🎂","🍰","🧁","🥧","🍫","🍬","🍭","🍮","🍯","🍼","🥛","☕","🫖","🍵","🍶","🍾","🍷","🍸","🍹","🍺","🍻","🥂","🥃","🫗","🥤","🧋","🧃","🧉","🧊","🥢","🍽️","🍴","🥄","🔪","🫙","🏺","🌍","🌎","🌏","🌐","🗺️","🗾","🧭","🏔️","⛰️","🛘","🌋","🗻","🏕️","🏖️","🏜️","🏝️","🏞️","🏟️","🏛️","🏗️","🧱","🪨","🪵","🛖","🏘️","🏚️","🏠","🏡","🏢","🏣","🏤","🏥","🏦","🏨","🏩","🏪","🏫","🏬","🏭","🏯","🏰","💒","🗼","🗽","⛪","🕌","🛕","🕍","⛩️","🕋","⛲","⛺","🌁","🌃","🏙️","🌄","🌅","🌆","🌇","🌉","♨️","🎠","🛝","🎡","🎢","💈","🎪","🚂","🚃","🚄","🚅","🚆","🚇","🚈","🚉","🚊","🚝","🚞","🚋","🚌","🚍","🚎","🚐","🚑","🚒","🚓","🚔","🚕","🚖","🚗","🚘","🚙","🛻","🚚","🚛","🚜","🏎️","🏍️","🛵","🦽","🦼","🛺","🚲","🛴","🛹","🛼","🚏","🛣️","🛤️","🛢️","⛽","🛞","🚨","🚥","🚦","🛑","🚧","⚓","🛟","⛵","🛶","🚤","🛳️","⛴️","🛥️","🚢","✈️","🛩️","🛫","🛬","🪂","💺","🚁","🚟","🚠","🚡","🛰️","🚀","🛸","🛎️","🧳","⌛","⏳","⌚","⏰","⏱️","⏲️","🕰️","🕛","🕧","🕐","🕜","🕑","🕝","🕒","🕞","🕓","🕟","🕔","🕠","🕕","🕡","🕖","🕢","🕗","🕣","🕘","🕤","🕙","🕥","🕚","🕦","🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘","🌙","🌚","🌛","🌜","🌡️","☀️","🌝","🌞","🪐","⭐","🌟","🌠","🌌","☁️","⛅","⛈️","🌤️","🌥️","🌦️","🌧️","🌨️","🌩️","🌪️","🌫️","🌬️","🌀","🌈","🌂","☂️","☔","⛱️","⚡","❄️","☃️","⛄","☄️","🔥","💧","🌊","🎃","🎄","🎆","🎇","🧨","✨","🎈","🎉","🎊","🎋","🎍","🎎","🎏","🎐","🎑","🧧","🎀","🎁","🎗️","🎟️","🎫","🎖️","🏆","🏅","🥇","🥈","🥉","⚽","⚾","🥎","🏀","🏐","🏈","🏉","🎾","🥏","🎳","🏏","🏑","🏒","🥍","🏓","🏸","🥊","🥋","🥅","⛳","⛸️","🎣","🤿","🎽","🎿","🛷","🥌","🎯","🪀","🪁","🔫","🎱","🔮","🪄","🎮","🕹️","🎰","🎲","🧩","🧸","🪅","🪩","🪆","♠️","♥️","♦️","♣️","♟️","🃏","🀄","🎴","🎭","🖼️","🎨","🧵","🪡","🧶","🪢","👓","🕶️","🥽","🥼","🦺","👔","👕","👖","🧣","🧤","🧥","🧦","👗","👘","🥻","🩱","🩲","🩳","👙","👚","🪭","👛","👜","👝","🛍️","🎒","🩴","👞","👟","🥾","🥿","👠","👡","🩰","👢","🪮","👑","👒","🎩","🎓","🧢","🪖","⛑️","📿","💄","💍","💎","🔇","🔈","🔉","🔊","📢","📣","📯","🔔","🔕","🎼","🎵","🎶","🎙️","🎚️","🎛️","🎤","🎧","📻","🎷","🎺","🪊","🪗","🎸","🎹","🎻","🪕","🥁","🪘","🪇","🪈","🪉","📱","📲","☎️","📞","📟","📠","🔋","🪫","🔌","💻","🖥️","🖨️","⌨️","🖱️","🖲️","💽","💾","💿","📀","🧮","🎥","🎞️","📽️","🎬","📺","📷","📸","📹","📼","🔍","🔎","🕯️","💡","🔦","🏮","🪔","📔","📕","📖","📗","📘","📙","📚","📓","📒","📃","📜","📄","📰","🗞️","📑","🔖","🏷️","🪙","💰","🪎","💴","💵","💶","💷","💸","💳","🧾","💹","✉️","📧","📨","📩","📤","📥","📦","📫","📪","📬","📭","📮","🗳️","✏️","✒️","🖋️","🖊️","🖌️","🖍️","📝","💼","📁","📂","🗂️","📅","📆","🗒️","🗓️","📇","📈","📉","📊","📋","📌","📍","📎","🖇️","📏","📐","✂️","🗃️","🗄️","🗑️","🔒","🔓","🔏","🔐","🔑","🗝️","🔨","🪓","⛏️","⚒️","🛠️","🗡️","⚔️","💣","🪃","🏹","🛡️","🪚","🔧","🪛","🔩","⚙️","🗜️","⚖️","🦯","🔗","⛓️‍💥","⛓️","🪝","🧰","🧲","🪜","🪏","⚗️","🧪","🧫","🧬","🔬","🔭","📡","💉","🩸","💊","🩹","🩼","🩺","🩻","🚪","🛗","🪞","🪟","🛏️","🛋️","🪑","🚽","🪠","🚿","🛁","🪤","🪒","🧴","🧷","🧹","🧺","🧻","🪣","🧼","🫧","🪥","🧽","🧯","🛒","🚬","⚰️","🪦","⚱️","🧿","🪬","🗿","🪧","🪪","🏧","🚮","🚰","♿","🚹","🚺","🚻","🚼","🚾","🛂","🛃","🛄","🛅","⚠️","🚸","⛔","🚫","🚳","🚭","🚯","🚱","🚷","📵","🔞","☢️","☣️","⬆️","↗️","➡️","↘️","⬇️","↙️","⬅️","↖️","↕️","↔️","↩️","↪️","⤴️","⤵️","🔃","🔄","🔙","🔚","🔛","🔜","🔝","🛐","⚛️","🕉️","✡️","☸️","☯️","✝️","☦️","☪️","☮️","🕎","🔯","🪯","♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓","⛎","🔀","🔁","🔂","▶️","⏩","⏭️","⏯️","◀️","⏪","⏮️","🔼","⏫","🔽","⏬","⏸️","⏹️","⏺️","⏏️","🎦","🔅","🔆","📶","🛜","📳","📴","♀️","♂️","⚧️","✖️","➕","➖","➗","🟰","♾️","‼️","⁉️","❓","❔","❕","❗","〰️","💱","💲","⚕️","♻️","⚜️","🔱","📛","🔰","⭕","✅","☑️","✔️","❌","❎","➰","➿","〽️","✳️","✴️","❇️","©️","®️","™️","🫟","#️⃣","*️⃣","0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟","🔠","🔡","🔢","🔣","🔤","🅰️","🆎","🅱️","🆑","🆒","🆓","ℹ️","🆔","Ⓜ️","🆕","🆖","🅾️","🆗","🅿️","🆘","🆙","🆚","🈁","🈂️","🈷️","🈶","🈯","🉐","🈹","🈚","🈲","🉑","🈸","🈴","🈳","㊗️","㊙️","🈺","🈵","🔴","🟠","🟡","🟢","🔵","🟣","🟤","⚫","⚪","🟥","🟧","🟨","🟩","🟦","🟪","🟫","⬛","⬜","◼️","◻️","◾","◽","▪️","▫️","🔶","🔷","🔸","🔹","🔺","🔻","💠","🔘","🔳","🔲","🏁","🚩","🎌","🏴","🏳️","🏳️‍🌈","🏳️‍⚧️","🏴‍☠️","🇦🇨","🇦🇩","🇦🇪","🇦🇫","🇦🇬","🇦🇮","🇦🇱","🇦🇲","🇦🇴","🇦🇶","🇦🇷","🇦🇸","🇦🇹","🇦🇺","🇦🇼","🇦🇽","🇦🇿","🇧🇦","🇧🇧","🇧🇩","🇧🇪","🇧🇫","🇧🇬","🇧🇭","🇧🇮","🇧🇯","🇧🇱","🇧🇲","🇧🇳","🇧🇴","🇧🇶","🇧🇷","🇧🇸","🇧🇹","🇧🇻","🇧🇼","🇧🇾","🇧🇿","🇨🇦","🇨🇨","🇨🇩","🇨🇫","🇨🇬","🇨🇭","🇨🇮","🇨🇰","🇨🇱","🇨🇲","🇨🇳","🇨🇴","🇨🇵","🇨🇶","🇨🇷","🇨🇺","🇨🇻","🇨🇼","🇨🇽","🇨🇾","🇨🇿","🇩🇪","🇩🇬","🇩🇯","🇩🇰","🇩🇲","🇩🇴","🇩🇿","🇪🇦","🇪🇨","🇪🇪","🇪🇬","🇪🇭","🇪🇷","🇪🇸","🇪🇹","🇪🇺","🇫🇮","🇫🇯","🇫🇰","🇫🇲","🇫🇴","🇫🇷","🇬🇦","🇬🇧","🇬🇩","🇬🇪","🇬🇫","🇬🇬","🇬🇭","🇬🇮","🇬🇱","🇬🇲","🇬🇳","🇬🇵","🇬🇶","🇬🇷","🇬🇸","🇬🇹","🇬🇺","🇬🇼","🇬🇾","🇭🇰","🇭🇲","🇭🇳","🇭🇷","🇭🇹","🇭🇺","🇮🇨","🇮🇩","🇮🇪","🇮🇱","🇮🇲","🇮🇳","🇮🇴","🇮🇶","🇮🇷","🇮🇸","🇮🇹","🇯🇪","🇯🇲","🇯🇴","🇯🇵","🇰🇪","🇰🇬","🇰🇭","🇰🇮","🇰🇲","🇰🇳","🇰🇵","🇰🇷","🇰🇼","🇰🇾","🇰🇿","🇱🇦","🇱🇧","🇱🇨","🇱🇮","🇱🇰","🇱🇷","🇱🇸","🇱🇹","🇱🇺","🇱🇻","🇱🇾","🇲🇦","🇲🇨","🇲🇩","🇲🇪","🇲🇫","🇲🇬","🇲🇭","🇲🇰","🇲🇱","🇲🇲","🇲🇳","🇲🇴","🇲🇵","🇲🇶","🇲🇷","🇲🇸","🇲🇹","🇲🇺","🇲🇻","🇲🇼","🇲🇽","🇲🇾","🇲🇿","🇳🇦","🇳🇨","🇳🇪","🇳🇫","🇳🇬","🇳🇮","🇳🇱","🇳🇴","🇳🇵","🇳🇷","🇳🇺","🇳🇿","🇴🇲","🇵🇦","🇵🇪","🇵🇫","🇵🇬","🇵🇭","🇵🇰","🇵🇱","🇵🇲","🇵🇳","🇵🇷","🇵🇸","🇵🇹","🇵🇼","🇵🇾","🇶🇦","🇷🇪","🇷🇴","🇷🇸","🇷🇺","🇷🇼","🇸🇦","🇸🇧","🇸🇨","🇸🇩","🇸🇪","🇸🇬","🇸🇭","🇸🇮","🇸🇯","🇸🇰","🇸🇱","🇸🇲","🇸🇳","🇸🇴","🇸🇷","🇸🇸","🇸🇹","🇸🇻","🇸🇽","🇸🇾","🇸🇿","🇹🇦","🇹🇨","🇹🇩","🇹🇫","🇹🇬","🇹🇭","🇹🇯","🇹🇰","🇹🇱","🇹🇲","🇹🇳","🇹🇴","🇹🇷","🇹🇹","🇹🇻","🇹🇼","🇹🇿","🇺🇦","🇺🇬","🇺🇲","🇺🇳","🇺🇸","🇺🇾","🇺🇿","🇻🇦","🇻🇨","🇻🇪","🇻🇬","🇻🇮","🇻🇳","🇻🇺","🇼🇫","🇼🇸","🇽🇰","🇾🇪","🇾🇹","🇿🇦","🇿🇲","🇿🇼","🏴󠁧󠁢󠁥󠁮󠁧󠁿","🏴󠁧󠁢󠁳󠁣󠁴󠁿","🏴󠁧󠁢󠁷󠁬󠁳󠁿"];
 const HUMAN_FACE_EMOJIS=new Set([
@@ -2405,7 +2409,7 @@ let LOCATION_TREE={
 
 
 const DEFAULT_LOCATION_TREE=cloneData(LOCATION_TREE);
-const APP_VERSION='1.1';
+const APP_VERSION='1.3';
 const STORAGE_KEY='xiaorichang_cloud_v1';
 const CLOUD_META_KEY='xiaorichang_cloud_meta_v1';
 const LAST_LOGIN_EMAIL_KEY='xiaorichang_last_login_email';
@@ -4265,6 +4269,7 @@ function renderLocationMaintList(){
           <span class="location-maint-name">${esc(l4)}</span>
           <span class="location-maint-actions">
             <button onclick="renameLocation(4,'${esc(l1)}','${esc(l2)}','${esc(l3)}','${esc(l4)}')" title="重新命名">✏️</button>
+            <button class="loc-move" onclick="openMoveLocation(4,'${esc(l1)}','${esc(l2)}','${esc(l3)}','${esc(l4)}')" title="移動位置">↪</button>
             <button class="loc-delete" onclick="deleteLocation(4,'${esc(l1)}','${esc(l2)}','${esc(l3)}','${esc(l4)}')" title="刪除">×</button>
           </span>
         </span>`).join('');
@@ -4274,6 +4279,7 @@ function renderLocationMaintList(){
             <span class="location-maint-name">${esc(l3)}</span>
             <span class="location-maint-actions">
               <button onclick="renameLocation(3,'${esc(l1)}','${esc(l2)}','${esc(l3)}')" title="重新命名">✏️</button>
+              <button class="loc-move" onclick="openMoveLocation(3,'${esc(l1)}','${esc(l2)}','${esc(l3)}')" title="移動位置">↪</button>
               <button class="loc-delete" onclick="deleteLocation(3,'${esc(l1)}','${esc(l2)}','${esc(l3)}')" title="刪除">×</button>
             </span>
           </div>
@@ -4286,6 +4292,7 @@ function renderLocationMaintList(){
           <span class="location-maint-name">${esc(l2)}</span>
           <span class="location-maint-actions">
             <button onclick="renameLocation(2,'${esc(l1)}','${esc(l2)}')" title="重新命名">✏️</button>
+            <button class="loc-move" onclick="openMoveLocation(2,'${esc(l1)}','${esc(l2)}')" title="移動位置">↪</button>
             <button class="loc-delete" onclick="deleteLocation(2,'${esc(l1)}','${esc(l2)}')" title="刪除">×</button>
           </span>
         </div>
@@ -4309,16 +4316,37 @@ function renderLocationMaintList(){
 }
 
 /* 採購 */
+function purchaseItemLabel(m){
+  return [m?.name||'',packageSpecText(m)].filter(Boolean).join('｜');
+}
 function populatePurchaseTypes(){
   const sel=document.getElementById('purchaseType');
-  const types=[...new Set(itemMasters.map(m=>m.type))];
-  sel.innerHTML=types.map(t=>`<option value="${esc(t)}">${metaOf(t).icon} ${t}</option>`).join('');
+  const types=[...new Set(itemMasters.map(m=>m.type))].sort(compareText);
+  sel.innerHTML=types.map(t=>`<option value="${esc(t)}">${metaOf(t).icon} ${esc(t)}</option>`).join('');
 }
-function syncPurchaseItemsByType(){
+function syncPurchaseItemsByType(preferredBrand='',preferredItemId=''){
   const type=document.getElementById('purchaseType').value;
+  const brandSel=document.getElementById('purchaseBrand');
+  const currentBrand=preferredBrand||brandSel.value;
+  const brands=[...new Set(
+    itemMasters.filter(m=>m.type===type).map(m=>String(m.brand||'').trim()).filter(Boolean)
+  )].sort(compareText);
+
+  brandSel.innerHTML=brands.map(brand=>`<option value="${esc(brand)}">${esc(brand)}</option>`).join('');
+  if(currentBrand&&brands.includes(currentBrand))brandSel.value=currentBrand;
+  syncPurchaseItemsByBrand(preferredItemId);
+}
+function syncPurchaseItemsByBrand(preferredItemId=''){
+  const type=document.getElementById('purchaseType').value;
+  const brand=document.getElementById('purchaseBrand').value;
   const sel=document.getElementById('purchaseItem');
-  const xs=itemMasters.filter(m=>m.type===type);
-  sel.innerHTML=xs.map(m=>`<option value="${m.id}">${esc(itemOptionLabel(m))}</option>`).join('');
+  const currentId=preferredItemId||sel.value;
+  const xs=itemMasters
+    .filter(m=>m.type===type&&String(m.brand||'').trim()===brand)
+    .sort((a,b)=>compareText(a.name,b.name)||compareText(packageSpecText(a),packageSpecText(b)));
+
+  sel.innerHTML=xs.map(m=>`<option value="${m.id}">${esc(purchaseItemLabel(m))}</option>`).join('');
+  if(currentId&&xs.some(m=>m.id===currentId))sel.value=currentId;
   syncPurchaseItem();
 }
 function openPurchase(preselectItemId=''){
@@ -4341,9 +4369,7 @@ function openPurchase(preselectItemId=''){
   const preselect=preselectItemId?masterOf(preselectItemId):null;
   if(preselect){
     document.getElementById('purchaseType').value=preselect.type;
-    syncPurchaseItemsByType();
-    document.getElementById('purchaseItem').value=preselect.id;
-    syncPurchaseItem();
+    syncPurchaseItemsByType(preselect.brand,preselect.id);
   }else{
     syncPurchaseItemsByType();
   }
@@ -4352,7 +4378,11 @@ function openPurchase(preselectItemId=''){
 }
 function syncPurchaseItem(){
   const m=masterOf(document.getElementById('purchaseItem').value);
-  if(!m)return;
+  if(!m){
+    const preview=document.getElementById('purchasePreview');
+    if(preview)preview.innerHTML='';
+    return;
+  }
   const outerField=document.getElementById('purchaseOuterField');
   if(m.outer&&m.per){
     outerField.style.display='block';
@@ -4370,8 +4400,12 @@ function togglePurchaseExpiry(){
   updatePurchasePreview();
 }
 function updatePurchasePreview(){
-  const m=masterOf(document.getElementById('purchaseItem')?.value)||itemMasters[0];
-  if(!m)return;
+  const m=masterOf(document.getElementById('purchaseItem')?.value);
+  if(!m){
+    const preview=document.getElementById('purchasePreview');
+    if(preview)preview.innerHTML='';
+    return;
+  }
   const outer=Math.max(0,Number(document.getElementById('purchaseOuter').value)||0);
   const loose=Math.max(0,Number(document.getElementById('purchaseLoose').value)||0);
   const add=m.outer&&m.per?outer*m.per+loose:loose;
@@ -4403,6 +4437,7 @@ function updatePurchasePreview(){
 }
 function savePurchase(){
   const m=masterOf(document.getElementById('purchaseItem').value);
+  if(!m)return appAlert('請先選擇品項。');
   const outer=Math.max(0,Number(document.getElementById('purchaseOuter').value)||0);
   const loose=Math.max(0,Number(document.getElementById('purchaseLoose').value)||0);
   const add=m.outer&&m.per?outer*m.per+loose:loose;
@@ -4465,6 +4500,7 @@ function openCount(batchId=''){
   const title=document.getElementById('countModalTitle');
   const desc=document.getElementById('countModalDesc');
   const typeSel=document.getElementById('countType');
+  const brandSel=document.getElementById('countBrand');
   const itemSel=document.getElementById('countItem');
   const batchSel=document.getElementById('countBatchChoice');
 
@@ -4476,16 +4512,19 @@ function openCount(batchId=''){
     desc.textContent='盤點只更新數量；若要修改保存期限與存放位置請使用「編輯」。';
   }
 
-  const types=[...new Set(batches.map(b=>masterOf(b.itemId).type))];
+  const types=[...new Set(
+    batches.map(b=>masterOf(b.itemId)?.type).filter(Boolean)
+  )].sort(compareText);
   typeSel.innerHTML=types.map(t=>
-    `<option value="${esc(t)}">${metaOf(t).icon} ${t}</option>`
+    `<option value="${esc(t)}">${metaOf(t).icon} ${esc(t)}</option>`
   ).join('');
 
   if(targetMaster)typeSel.value=targetMaster.type;
-  syncCountItems(target);
+  syncCountBrands(target);
 
   // 從資料列進來時，整組條件固定，尤其批次不可切換。
   typeSel.disabled=!!countSpecifiedBatchId;
+  brandSel.disabled=!!countSpecifiedBatchId;
   itemSel.disabled=!!countSpecifiedBatchId;
   batchSel.disabled=!!countSpecifiedBatchId;
 
@@ -4495,31 +4534,60 @@ function openCount(batchId=''){
 function closeCountModal(){
   closeModal('countModal');
   countSpecifiedBatchId='';
-  const ids=['countType','countItem','countBatchChoice'];
+  const ids=['countType','countBrand','countItem','countBatchChoice'];
   ids.forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.disabled=false;
   });
 }
+function syncCountBrands(target=null){
+  const type=document.getElementById('countType').value;
+  const targetMaster=target?masterOf(target.itemId):null;
+  const brandSel=document.getElementById('countBrand');
+  const currentBrand=targetMaster?.brand||brandSel.value;
+  const brands=[...new Set(
+    batches
+      .map(b=>masterOf(b.itemId))
+      .filter(m=>m&&m.type===type)
+      .map(m=>String(m.brand||'').trim())
+      .filter(Boolean)
+  )].sort(compareText);
 
+  brandSel.innerHTML=brands.map(brand=>`<option value="${esc(brand)}">${esc(brand)}</option>`).join('');
+  if(currentBrand&&brands.includes(currentBrand))brandSel.value=currentBrand;
+  syncCountItems(target);
+}
 function syncCountItems(target=null){
   const type=document.getElementById('countType').value;
+  const brand=document.getElementById('countBrand').value;
   const itemIds=[...new Set(
-    batches.filter(b=>masterOf(b.itemId).type===type).map(b=>b.itemId)
-  )];
+    batches
+      .filter(b=>{
+        const m=masterOf(b.itemId);
+        return m&&m.type===type&&String(m.brand||'').trim()===brand;
+      })
+      .map(b=>b.itemId)
+  )].sort((a,b)=>{
+    const ma=masterOf(a),mb=masterOf(b);
+    return compareText(ma?.name,mb?.name)||compareText(packageSpecText(ma),packageSpecText(mb));
+  });
 
   const sel=document.getElementById('countItem');
-  sel.innerHTML=itemIds.map(id=>`<option value="${id}">${esc(itemOptionLabel(masterOf(id)))}</option>`).join('');
+  sel.innerHTML=itemIds.map(id=>{
+    const m=masterOf(id);
+    return `<option value="${id}">${esc(purchaseItemLabel(m))}</option>`;
+  }).join('');
 
   if(target&&itemIds.includes(target.itemId))sel.value=target.itemId;
   syncCountBatchOptions(target);
 }
 function syncCountBatchOptions(target=null){
-  const xs=batchesForCountItem();
+  const xs=batchesForCountItem()
+    .sort((a,b)=>compareText(batchChoiceLabel(a),batchChoiceLabel(b)));
   const sel=document.getElementById('countBatchChoice');
 
   sel.innerHTML=xs.map((b,index)=>
-    `<option value="${b.id}">${batchChoiceLabel(b,index)}</option>`
+    `<option value="${b.id}">${esc(batchChoiceLabel(b,index))}</option>`
   ).join('');
 
   if(countSpecifiedBatchId&&xs.some(b=>b.id===countSpecifiedBatchId)){
@@ -4536,7 +4604,11 @@ function selectedCountBatch(){
 }
 function syncCountBatch(){
   const b=selectedCountBatch();
-  if(!b)return;
+  if(!b){
+    const preview=document.getElementById('countPreview');
+    if(preview)preview.innerHTML='';
+    return;
+  }
 
   const m=masterOf(b.itemId);
   const p=qtyParts(m,b.total);
@@ -4565,7 +4637,6 @@ function updateCountPreview(){
   const outer=Math.max(0,Number(document.getElementById('countOuter').value)||0);
   const loose=Math.max(0,Number(document.getElementById('countLoose').value)||0);
   const total=m.outer&&m.per?outer*m.per+loose:loose;
-  const typeText=m.type;
 
   document.getElementById('countPreview').innerHTML=
     `<div class="summary-title">品項：${tm.icon} ${esc(itemFullName(m))}</div>`+
@@ -4988,6 +5059,187 @@ async function deleteMasterItemById(id){
   showToast('🗑️ 品項已刪除');
 }
 
+
+
+/* ===== v1.2：所有下拉選單依顯示名稱由小到大 ===== */
+function optionSortLabel(text){
+  return String(text??'')
+    .replace(/^[\s\p{Extended_Pictographic}\uFE0F\u200D]+/gu,'')
+    .trim();
+}
+function sortSelectOptionsByName(select){
+  if(!(select instanceof HTMLSelectElement)||select.options.length<2)return;
+  const selectedValue=select.value;
+  const options=[...select.options];
+  const sorted=[...options].sort((a,b)=>compareText(optionSortLabel(a.textContent),optionSortLabel(b.textContent)));
+  if(sorted.every((opt,index)=>opt===options[index]))return;
+  const frag=document.createDocumentFragment();
+  sorted.forEach(opt=>frag.appendChild(opt));
+  select.appendChild(frag);
+  if([...select.options].some(opt=>opt.value===selectedValue))select.value=selectedValue;
+}
+function sortAllSelectOptions(root=document){
+  if(root instanceof HTMLSelectElement)sortSelectOptionsByName(root);
+  root.querySelectorAll?.('select').forEach(sortSelectOptionsByName);
+}
+const selectOrderObserver=new MutationObserver(records=>{
+  const targets=new Set();
+  records.forEach(record=>{
+    if(record.target instanceof HTMLSelectElement)targets.add(record.target);
+    record.addedNodes.forEach(node=>{
+      if(!(node instanceof Element))return;
+      if(node instanceof HTMLSelectElement)targets.add(node);
+      node.querySelectorAll?.('select').forEach(sel=>targets.add(sel));
+      node.closest?.('select')&&targets.add(node.closest('select'));
+    });
+  });
+  targets.forEach(sortSelectOptionsByName);
+});
+selectOrderObserver.observe(document.body,{childList:true,subtree:true});
+sortAllSelectOptions();
+
+/* ===== v1.2：位置可以搬到其他上一層位置 ===== */
+let moveLocationTarget=null;
+function openMoveLocation(level,l1,l2='',l3='',l4=''){
+  if(level<2||level>4)return;
+  moveLocationTarget={level,l1,l2,l3,l4};
+  const current=[l1,l2,l3,l4].slice(0,level).filter(Boolean).join(' - ');
+  document.getElementById('moveLocationCurrent').innerHTML=`目前位置：<b>${esc(current)}</b>`;
+
+  const f1=document.getElementById('moveDest1Field');
+  const f2=document.getElementById('moveDest2Field');
+  const f3=document.getElementById('moveDest3Field');
+  f1.style.display='block';
+  f2.style.display=level>=3?'block':'none';
+  f3.style.display=level>=4?'block':'none';
+
+  const roots=locationRootsEligibleForLevel(level);
+  setLocationSelectOptions(document.getElementById('moveDest1'),roots,'— 無可移動位置 —');
+  const d1=document.getElementById('moveDest1');
+  if(roots.includes(l1))d1.value=l1;
+  syncMoveDestination2();
+
+  if(level===2){
+    const alternatives=roots.filter(x=>x!==l1);
+    if(alternatives.length)d1.value=alternatives[0];
+  }
+  if(level===3){
+    const d2=document.getElementById('moveDest2');
+    const choices=[...d2.options].map(o=>o.value).filter(Boolean);
+    const alt=choices.find(x=>!(d1.value===l1&&x===l2));
+    if(alt)d2.value=alt;
+  }
+  if(level===4){
+    const d2=document.getElementById('moveDest2');
+    const d3=document.getElementById('moveDest3');
+    const paths=[];
+    roots.forEach(r=>Object.entries(LOCATION_TREE[r]||{}).forEach(([r2,r3map])=>{
+      if(!r2)return;
+      Object.keys(r3map||{}).filter(Boolean).forEach(r3=>paths.push([r,r2,r3]));
+    }));
+    const alt=paths.find(([a,b,c])=>!(a===l1&&b===l2&&c===l3));
+    if(alt){
+      d1.value=alt[0];syncMoveDestination2();
+      d2.value=alt[1];syncMoveDestination3();
+      d3.value=alt[2];
+    }
+  }
+  sortAllSelectOptions(document.getElementById('moveLocationModal'));
+  openModal('moveLocationModal');
+}
+function syncMoveDestination2(){
+  if(!moveLocationTarget)return;
+  const level=moveLocationTarget.level;
+  const l1=document.getElementById('moveDest1').value;
+  const d2=document.getElementById('moveDest2');
+  if(level>=3){
+    let keys=Object.keys(LOCATION_TREE[l1]||{}).filter(Boolean).sort(compareText);
+    if(level>=4)keys=keys.filter(l2=>Object.keys((LOCATION_TREE[l1]||{})[l2]||{}).some(Boolean));
+    setLocationSelectOptions(d2,keys,'— 無第 2 層 —');
+  }
+  syncMoveDestination3();
+}
+function syncMoveDestination3(){
+  if(!moveLocationTarget||moveLocationTarget.level<4)return;
+  const l1=document.getElementById('moveDest1').value;
+  const l2=document.getElementById('moveDest2').value;
+  const keys=Object.keys(((LOCATION_TREE[l1]||{})[l2])||{}).filter(Boolean).sort(compareText);
+  setLocationSelectOptions(document.getElementById('moveDest3'),keys,'— 無第 3 層 —');
+}
+function moveLocationDestinationText(level,l1,l2='',l3=''){
+  return [l1,l2,l3].slice(0,level-1).filter(Boolean).join(' - ');
+}
+async function saveMoveLocation(){
+  const t=moveLocationTarget;
+  if(!t)return;
+  const {level,l1,l2,l3,l4}=t;
+  const newL1=document.getElementById('moveDest1').value;
+  const newL2=level>=3?document.getElementById('moveDest2').value:'';
+  const newL3=level>=4?document.getElementById('moveDest3').value:'';
+  if(!newL1||(level>=3&&!newL2)||(level>=4&&!newL3))return appAlert('請先選擇要移到哪個上一層位置。');
+
+  const sameParent=level===2 ? newL1===l1
+    : level===3 ? newL1===l1&&newL2===l2
+    : newL1===l1&&newL2===l2&&newL3===l3;
+  if(sameParent)return appAlert('目前已經在這個位置底下囉～');
+
+  const name=level===2?l2:level===3?l3:l4;
+  if(level===2&&Object.prototype.hasOwnProperty.call(LOCATION_TREE[newL1]||{},name)){
+    return appAlert(`目標位置底下已經有同名的「${name}」。`);
+  }
+  if(level===3&&Object.prototype.hasOwnProperty.call(((LOCATION_TREE[newL1]||{})[newL2])||{},name)){
+    return appAlert(`目標位置底下已經有同名的「${name}」。`);
+  }
+  if(level===4){
+    const dest=[...((((LOCATION_TREE[newL1]||{})[newL2]||{})[newL3])||[])].filter(Boolean);
+    if(dest.includes(name))return appAlert(`目標位置底下已經有同名的「${name}」。`);
+  }
+
+  const oldPath=[l1,l2,l3,l4].slice(0,level).filter(Boolean).join(' - ');
+  const parentPath=moveLocationDestinationText(level,newL1,newL2,newL3);
+  const hasChildren=locationChildrenExist(level,l1,l2,l3);
+  const extra=hasChildren?'\n\n這個位置底下的子位置也會一起移動。':'';
+  if(!await askConfirm(`確定把「${oldPath}」移到「${parentPath}」底下嗎？${extra}\n\n使用這個位置的庫存批次會同步更新。`,{title:'🔀 確認修改位置',confirmText:'移動'}))return;
+
+  if(level===2){
+    const branch=LOCATION_TREE[l1][l2];
+    delete LOCATION_TREE[l1][l2];
+    LOCATION_TREE[newL1][l2]=branch;
+    batches.forEach(b=>{
+      if((b.loc1||'')===l1&&(b.loc2||'')===l2)b.loc1=newL1;
+    });
+  }else if(level===3){
+    const branch=LOCATION_TREE[l1][l2][l3];
+    delete LOCATION_TREE[l1][l2][l3];
+    if(!Object.keys(LOCATION_TREE[l1][l2]).filter(Boolean).length)LOCATION_TREE[l1][l2]={'':['']};
+    if(!LOCATION_TREE[newL1][newL2]||Array.isArray(LOCATION_TREE[newL1][newL2]))LOCATION_TREE[newL1][newL2]={};
+    delete LOCATION_TREE[newL1][newL2][''];
+    LOCATION_TREE[newL1][newL2][l3]=branch;
+    batches.forEach(b=>{
+      if((b.loc1||'')===l1&&(b.loc2||'')===l2&&(b.loc3||'')===l3){
+        b.loc1=newL1;b.loc2=newL2;
+      }
+    });
+  }else{
+    const src=[...((((LOCATION_TREE[l1]||{})[l2]||{})[l3])||[])].filter(Boolean).filter(x=>x!==l4);
+    LOCATION_TREE[l1][l2][l3]=src.length?src:[''];
+    const dest=[...((((LOCATION_TREE[newL1]||{})[newL2]||{})[newL3])||[])].filter(Boolean);
+    dest.push(l4);
+    LOCATION_TREE[newL1][newL2][newL3]=[...new Set(dest)].sort(compareText);
+    batches.forEach(b=>{
+      if((b.loc1||'')===l1&&(b.loc2||'')===l2&&(b.loc3||'')===l3&&(b.loc4||'')===l4){
+        b.loc1=newL1;b.loc2=newL2;b.loc3=newL3;
+      }
+    });
+  }
+
+  moveLocationTarget=null;
+  closeModal('moveLocationModal');
+  renderLocationMaintList();
+  syncLocationManagerParents();
+  showToast('🔀 位置已移動');
+}
+
 loadLocal();
 renderAllData();
 initCloud();
@@ -5007,6 +5259,7 @@ if(historyFromInit&&historyToInit){
   historyFromInit.max=historyToInit.value||'';
   historyToInit.min=historyFromInit.value||'';
 }
+
 </script>
 </body>
 </html>
